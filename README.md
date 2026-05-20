@@ -46,8 +46,6 @@ This project is simultaneously:
 ## ⚡Tech Stack 2026
 
 
-*Technologies marked* **✦** *are known by less than 3% of Unity developers worldwide*
-
 </div>
 
 <br/>
