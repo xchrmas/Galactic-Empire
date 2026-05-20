@@ -1,0 +1,18 @@
+{
+    "name": "GalacticEmpire.Presentation",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0d4fbb360851f1f4088f149203d45455",
+        "GUID:540139f15a26b0a4e81713b177899692",
+        "GUID:07ef2a281eee6e14985ce21cccf14867"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
