@@ -43,7 +43,7 @@ This project is simultaneously:
 
 <div align="center">
 
-## ⚡ WOW Tech Stack 2026
+## ⚡Tech Stack 2026
 
 ### Senior Unity Developer · Top 0.5% Skill Set
 
