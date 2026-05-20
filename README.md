@@ -338,9 +338,8 @@ public struct ShipComponent : IComponentData
 
 ## 👨‍💻 Developer
 
-**Senior Unity Developer · Specializing in High-Performance Game Systems**
+**Unity Developer · Specializing in High-Performance Game Systems**
 
-*Building at the intersection of clean architecture, bleeding-edge rendering, and real-time simulation.*
 
 [![GitHub](https://img.shields.io/badge/GitHub-xchrmas-181717?style=for-the-badge&logo=github)](https://github.com/xchrmas)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/YOUR_PROFILE)
