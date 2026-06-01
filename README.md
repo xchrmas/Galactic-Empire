@@ -303,39 +303,6 @@ GalacticEmpire/
 
 <div align="center">
 
-## 💡 Coding Standards
-
-</div>
-
-```csharp
-// ✅ Every class — Single Responsibility
-// ✅ XML documentation on all public members
-// ✅ English only — code + comments
-// ✅ PascalCase → classes / methods / properties
-// ✅ _camelCase → private fields
-// ✅ Span<T> / NativeArray over managed collections in hot paths
-// ✅ UniTask over Coroutines for async operations
-// ✅ ECS Systems over MonoBehaviours for simulation logic
-
-/// <summary>
-/// Represents a single ship entity within the DOTS fleet simulation.
-/// Processed by <see cref="FleetMovementSystem"/> each frame via Burst-compiled jobs.
-/// </summary>
-public struct ShipComponent : IComponentData
-{
-    public float Speed;
-    public float Hull;
-    public Entity TargetEntity;
-}
-```
-
----
-
-<div align="center">
-
-## 👨‍💻 Developer
-
-**Unity Developer · Specializing in High-Performance Game Systems**
 
 
 [![GitHub](https://img.shields.io/badge/GitHub-xchrmas-181717?style=for-the-badge&logo=github)](https://github.com/xchrmas)
