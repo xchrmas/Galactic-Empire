@@ -1,0 +1,118 @@
+﻿# ================================================
+# GALACTIC EMPIRE — Coding Standards
+# Enforced automatically by Rider & .NET compiler
+# Senior Unity Developer · Clean Architecture
+# ================================================
+
+root = true
+
+# ── All files ────────────────────────────────────
+[*]
+indent_style              = space
+indent_size               = 4
+end_of_line               = crlf
+charset                   = utf-8
+trim_trailing_whitespace  = true
+insert_final_newline      = true
+
+# ── C# files ─────────────────────────────────────
+[*.cs]
+
+# Namespaces
+csharp_style_namespace_declarations = file_scoped:warning
+
+# var usage
+csharp_style_var_for_built_in_types    = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere             = false:suggestion
+
+# Expression-bodied members
+csharp_style_expression_bodied_methods     = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties  = when_on_single_line:suggestion
+csharp_style_expression_bodied_constructors = false:warning
+
+# Pattern matching
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+csharp_style_pattern_matching_over_as_with_null_check  = true:warning
+
+# Null checks
+csharp_style_prefer_null_check_over_type_check = true:warning
+dotnet_style_null_propagation                  = true:suggestion
+dotnet_style_coalesce_expression               = true:suggestion
+
+# this. qualifier — NEVER use this. prefix
+dotnet_style_qualification_for_field    = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method   = false:warning
+dotnet_style_qualification_for_event    = false:warning
+
+# Braces — always required
+csharp_prefer_braces = true:warning
+
+# New lines
+csharp_new_line_before_open_brace                     = all
+csharp_new_line_before_else                           = true
+csharp_new_line_before_catch                          = true
+csharp_new_line_before_finally                        = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types     = true
+
+# Spacing
+csharp_space_after_cast                                 = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_method_call_parameter_list_parentheses        = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause  = true
+
+# Sorting using directives
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+
+# ── Naming Conventions ────────────────────────────
+# Interfaces must start with I
+dotnet_naming_rule.interfaces_must_start_with_i.symbols  = interface_symbols
+dotnet_naming_rule.interfaces_must_start_with_i.style    = i_prefix_style
+dotnet_naming_rule.interfaces_must_start_with_i.severity = warning
+
+dotnet_naming_symbols.interface_symbols.applicable_kinds           = interface
+dotnet_naming_symbols.interface_symbols.applicable_accessibilities = *
+
+dotnet_naming_style.i_prefix_style.required_prefix = I
+dotnet_naming_style.i_prefix_style.capitalization  = pascal_case
+
+# Private fields must start with _
+dotnet_naming_rule.private_fields_underscore.symbols  = private_field_symbols
+dotnet_naming_rule.private_fields_underscore.style    = underscore_camel_style
+dotnet_naming_rule.private_fields_underscore.severity = warning
+
+dotnet_naming_symbols.private_field_symbols.applicable_kinds           = field
+dotnet_naming_symbols.private_field_symbols.applicable_accessibilities = private
+
+dotnet_naming_style.underscore_camel_style.required_prefix = _
+dotnet_naming_style.underscore_camel_style.capitalization  = camel_case
+
+# Constants must be PascalCase
+dotnet_naming_rule.constants_pascal_case.symbols  = constant_symbols
+dotnet_naming_rule.constants_pascal_case.style    = pascal_case_style
+dotnet_naming_rule.constants_pascal_case.severity = warning
+
+dotnet_naming_symbols.constant_symbols.applicable_kinds           = field
+dotnet_naming_symbols.constant_symbols.required_modifiers         = const
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# ── Analyzer Severities ───────────────────────────
+# Disable XML doc warnings on non-public members
+dotnet_diagnostic.CS1591.severity = none
+
+# Disable warning for missing default constructor
+dotnet_diagnostic.CS8618.severity = suggestion
+
+# ── JSON / YAML ───────────────────────────────────
+[*.{json,yaml,yml}]
+indent_size = 2
+
+# ── Markdown ──────────────────────────────────────
+[*.md]
+trim_trailing_whitespace = false
