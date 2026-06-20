@@ -1,4 +1,4 @@
-// Layer: Presentation | Main game loop — managed by VContainer, no MonoBehaviour.
+// // Main game loop - controlled by VContainer, no MonoBehaviour
 
 using System;
 using UnityEngine;
