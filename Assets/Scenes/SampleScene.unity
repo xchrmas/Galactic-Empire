@@ -480,6 +480,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  _fleetRepository: {fileID: 11400000, guid: 0ef20843c0cd5e540a57732a59e0cd9f, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

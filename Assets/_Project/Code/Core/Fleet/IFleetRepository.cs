@@ -1,4 +1,4 @@
-// Core defines WHAT operations exist — not HOW they are implemented.
+//  Contract for fleet data access.
 
 using System;
 using System.Collections.Generic;
@@ -17,8 +17,8 @@ namespace GalacticEmpire.Core
         // Adds a new ship to the fleet
         void Add(ShipEntity ship);
 
-        // Updates an existing ship (after damage, repair, etc.)
-        void Update(ShipEntity ship);
+        // Replaces an existing ship with updated data (after damage, repair, etc.)
+        void Replace(ShipEntity ship);
 
         // Removes a ship from the fleet permanently
         void Remove(Guid id);

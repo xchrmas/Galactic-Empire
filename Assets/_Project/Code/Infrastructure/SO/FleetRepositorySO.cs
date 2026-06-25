@@ -1,5 +1,5 @@
-// Layer: Infrastructure | ScriptableObject implementation of IFleetRepository.
-// Stores fleet data as a Unity asset — editable directly in the Inspector.
+// ScriptableObject implementation of IFleetRepository.
+
 
 using System;
 using System.Collections.Generic;
@@ -32,18 +32,22 @@ namespace GalacticEmpire.Infrastructure
         public void Add(ShipEntity ship)
         {
             if (ship == null)
+            {
                 throw new ArgumentNullException(nameof(ship));
+            }
 
             _ships.Add(ship);
         }
 
         /// <summary>Replaces an existing ship with updated data.</summary>
-        public void Update(ShipEntity ship)
+        public void Replace(ShipEntity ship)
         {
             int index = _ships.FindIndex(s => s.Id == ship.Id);
 
             if (index < 0)
+            {
                 throw new InvalidOperationException($"Ship {ship.Id} not found in fleet.");
+            }
 
             // Records are immutable — replace old entry with the updated ship
             _ships[index] = ship;
@@ -55,7 +59,9 @@ namespace GalacticEmpire.Infrastructure
             int removed = _ships.RemoveAll(s => s.Id == id);
 
             if (removed == 0)
+            {
                 throw new InvalidOperationException($"Ship {id} not found in fleet.");
+            }
         }
     }
 }
