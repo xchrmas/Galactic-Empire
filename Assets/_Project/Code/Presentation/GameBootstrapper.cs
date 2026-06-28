@@ -19,7 +19,6 @@ namespace GalacticEmpire.Presentation
         protected override void Configure(IContainerBuilder builder)
         {
             // Register the ScriptableObject instance as IFleetRepository.
-            // Any class that asks for IFleetRepository gets this exact asset.
             builder.RegisterInstance(_fleetRepository).As<IFleetRepository>();
 
             // Register the main game loop controller.

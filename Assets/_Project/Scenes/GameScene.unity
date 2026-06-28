@@ -256,6 +256,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1198562952}
   - component: {fileID: 1198562953}
+  - component: {fileID: 1198562954}
   m_Layer: 0
   m_Name: '[GameBootstrapper]'
   m_TagString: Untagged
@@ -295,6 +296,19 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _fleetRepository: {fileID: 11400000, guid: 0ef20843c0cd5e540a57732a59e0cd9f, type: 2}
+--- !u!114 &1198562954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198562951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d67d1bcbd4c3674eac16ff087ddeaa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Presentation::GalacticEmpire.Presentation.RuntimeExceptionHandler
+  _config: {fileID: 11400000, guid: 262d8f56a8d279143ac50ff6599d6fb6, type: 2}
 --- !u!1 &1612576981
 GameObject:
   m_ObjectHideFlags: 0

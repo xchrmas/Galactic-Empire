@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab48b2e16667ead49a22da02304f538f, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: GalacticEmpire.Core::GalacticEmpire.Core.GameConfigSO
+  MaxFleetSize: 50
+  DefaultShipSpeed: 10
+  FleetTickRate: 0.1
+  StartingMetal: 500
+  StartingEnergy: 300
+  StartingCrystals: 50
+  BaseProductionRate: 1
+  MaxStationModules: 20
+  StationGridSize: 6
+  GridCellSize: 2
+  BattleTickRate: 0.05
+  MaxEngagementRange: 50
+  DamageMultiplier: 1
+  VerboseLogging: 1
+  ShowFPSOverlay: 1
+  ShowDebugGizmos: 1
