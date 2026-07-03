@@ -1,4 +1,5 @@
-// Entry point — configures VContainer DI container.
+
+//Entry point-configures VContainer DI container.
 
 using GalacticEmpire.Core;
 using GalacticEmpire.Infrastructure;
@@ -8,20 +9,24 @@ using VContainer.Unity;
 
 namespace GalacticEmpire.Presentation
 {
-    /// <summary>Application entry point. Configures the DI container.</summary>
+    /// <summary>Application entry point. Configures the DI container</summary>
     public sealed class GameBootstrapper : LifetimeScope
     {
-        // The FleetRepository asset assigned in the Inspector.
-        // VContainer will inject this wherever IFleetRepository is requested.
         [SerializeField] private FleetRepositorySO _fleetRepository;
+        [SerializeField] private StationRepositorySO _stationRepository;
+        [SerializeField] private GameConfigSO _config;
 
-        /// <summary>Registers all game dependencies into the DI container.</summary>
+        /// <summary>Registers all game dependencies into the DI container</summary>
         protected override void Configure(IContainerBuilder builder)
         {
-            // Register the ScriptableObject instance as IFleetRepository.
-            builder.RegisterInstance(_fleetRepository).As<IFleetRepository>();
+            // Register config — available everywhere in the app
+            builder.RegisterInstance(_config);
 
-            // Register the main game loop controller.
+            // Registering repositories as their interfaces - DI
+            builder.RegisterInstance(_fleetRepository).As<IFleetRepository>();
+            builder.RegisterInstance(_stationRepository).As<IStationRepository>();
+
+            // Register the main game loop controller
             builder.RegisterEntryPoint<GameEntryPoint>();
         }
     }

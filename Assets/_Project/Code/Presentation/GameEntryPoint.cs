@@ -1,4 +1,6 @@
 
+
+// Main game loop-managed by VContainer
 using System;
 using GalacticEmpire.Core;
 using UnityEngine;
@@ -10,29 +12,71 @@ namespace GalacticEmpire.Presentation
     public sealed class GameEntryPoint : IInitializable, IDisposable
     {
         private readonly IFleetRepository _fleetRepository;
+        private readonly IStationRepository _stationRepository;
+        private readonly GameConfigSO _config;
 
-        // VContainer automatically injects IFleetRepository via constructor injection.
-        // No need to find or create it manually — DI handles this.
-        public GameEntryPoint(IFleetRepository fleetRepository)
+        // VContainer injects all dependencies via constructor automatically
+        public GameEntryPoint(
+            IFleetRepository fleetRepository,
+            IStationRepository stationRepository,
+            GameConfigSO config)
         {
             _fleetRepository = fleetRepository;
+            _stationRepository = stationRepository;
+            _config = config;
         }
 
         /// <summary>Called once on scene start.</summary>
         public void Initialize()
         {
-            // Test: create a ship and add it to the fleet via repository
-            var ship = ShipEntity.Create("Destroyer", maxHull: 100f, damage: 25f, speed: 10f);
-            _fleetRepository.Add(ship);
+            GELogger.Info(LogCategory.System, "Galactic Empire initializing");
 
-            var fleet = _fleetRepository.GetAll();
-            Debug.Log($"[GameEntryPoint] Galactic Empire initialized. Fleet size: {fleet.Count}");
+            InitializeStation();
+            InitializeFleet();
+
+            GELogger.Info(LogCategory.System, "Galactic Empire initialized. All systems online");
         }
 
         /// <summary>Called on scene unload — cleanup.</summary>
         public void Dispose()
         {
-            Debug.Log("[GameEntryPoint] Shutting down.");
+            GELogger.Info(LogCategory.System, "Galactic Empire shutting down");
+        }
+
+        private void InitializeStation()
+        {
+            if (!_stationRepository.HasStation())
+            {
+                // Create default station on first launch
+                var station = StationEntity.Create(
+                    "Galactic Empire HQ",
+                    gridSize: _config.StationGridSize);
+
+                _stationRepository.Save(station);
+
+                GELogger.Info(LogCategory.Station,
+                    $"Station created: {station.Name} | Grid: {station.GridSize}x{station.GridSize}");
+            }
+            else
+            {
+                var station = _stationRepository.Get();
+                GELogger.Info(LogCategory.Station,
+                    $"Station loaded: {station.Name} | Modules: {station.TotalModules}");
+            }
+        }
+
+        private void InitializeFleet()
+        {
+            var ship = ShipEntity.Create(
+                "Destroyer I",
+                maxHull: _config.MaxFleetSize,
+                damage: 25f,
+                speed: _config.DefaultShipSpeed);
+
+            _fleetRepository.Add(ship);
+
+            GELogger.Info(LogCategory.Fleet,
+                $"Fleet initialized. Ships: {_fleetRepository.GetAll().Count}");
         }
     }
 }
