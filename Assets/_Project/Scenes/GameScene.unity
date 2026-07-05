@@ -296,6 +296,8 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _fleetRepository: {fileID: 11400000, guid: 0ef20843c0cd5e540a57732a59e0cd9f, type: 2}
+  _stationRepository: {fileID: 11400000, guid: aec9e055a3f2d0b4bbb8d724d4e837ab, type: 2}
+  _config: {fileID: 11400000, guid: 262d8f56a8d279143ac50ff6599d6fb6, type: 2}
 --- !u!114 &1198562954
 MonoBehaviour:
   m_ObjectHideFlags: 0

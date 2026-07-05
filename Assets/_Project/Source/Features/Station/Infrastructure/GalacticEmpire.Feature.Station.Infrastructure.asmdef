@@ -1,0 +1,19 @@
+{
+    "name": "GalacticEmpire.Feature.Station.Infrastructure",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0d4fbb360851f1f4088f149203d45455",
+        "GUID:65107589ecab0c943a6d0c6d46abfe0b",
+        "GUID:07ef2a281eee6e14985ce21cccf14867",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
