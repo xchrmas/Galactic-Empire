@@ -1,18 +1,15 @@
 {
-    "name": "GalacticEmpire.Application.Tests",
+    "name": "GalacticEmpire.Feature.Fleet.Domain",
     "rootNamespace": "",
     "references": [
-        "GUID:0d4fbb360851f1f4088f149203d45455",
-        "GUID:540139f15a26b0a4e81713b177899692"
+        "GUID:0d4fbb360851f1f4088f149203d45455"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

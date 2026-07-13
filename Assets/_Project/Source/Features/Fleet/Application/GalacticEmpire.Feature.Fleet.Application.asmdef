@@ -1,15 +1,13 @@
 {
-    "name": "GalacticEmpire.Core.Tests",
+    "name": "GalacticEmpire.Feature.Fleet.Application",
     "rootNamespace": "",
     "references": [
-        "GUID:0d4fbb360851f1f4088f149203d45455",
-        "GUID:27619889b8ba8c24980f49ee34dbb44a",
-        "GUID:0acc523941302664db1f4e527237feb3",
-        "GUID:758c3ae419697b545a5fe26b00e7a0aa"
+        "GalacticEmpire.Core",
+        "GalacticEmpire.Feature.Fleet.Domain",
+        "GalacticEmpire.Application",
+        "UniTask"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,

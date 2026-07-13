@@ -111,5 +111,6 @@ namespace GalacticEmpire.Core.Tests
             // damaged ship must remain unchanged after Repair() call
             Assert.That(damaged.Hull, Is.EqualTo(40f));
         }
+
     }
 }
