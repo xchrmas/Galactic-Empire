@@ -1,6 +1,7 @@
 // Entry point - configures VContainer DI container.
 
 using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Station.Application;
 using GalacticEmpire.Feature.Station.Infrastructure;
 using GalacticEmpire.Infrastructure;
@@ -30,6 +31,9 @@ namespace GalacticEmpire.Presentation
 
             // Production service - runs the economy tick loop
             builder.Register<IResourceService, ResourceProductionService>(VContainer.Lifetime.Singleton);
+
+            // Fleet service - handles all fleet use cases
+            builder.Register<IFleetService, FleetService>(VContainer.Lifetime.Singleton);
 
             builder.RegisterEntryPoint<GameEntryPoint>();
         }

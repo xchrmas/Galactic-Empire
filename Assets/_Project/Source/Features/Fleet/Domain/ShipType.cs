@@ -1,7 +1,7 @@
 // All ship classes available in the game.
 // Each type has a different role on the battlefield.
 
-namespace GalacticEmpire.Feature.Fleet.Infrastructure
+namespace GalacticEmpire.Feature.Fleet.Domain
 {
     public enum ShipType
     {

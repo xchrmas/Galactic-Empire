@@ -5,7 +5,7 @@ using GalacticEmpire.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GalacticEmpire.Feature.Fleet.Infrastructure
+namespace GalacticEmpire.Feature.Fleet.Domain
 {
     /// <summary>Defines stats, cost and visual data for a ship class.</summary>
     [CreateAssetMenu(fileName = "New Ship", menuName = "GalacticEmpire/Fleet/Ship Blueprint")]
