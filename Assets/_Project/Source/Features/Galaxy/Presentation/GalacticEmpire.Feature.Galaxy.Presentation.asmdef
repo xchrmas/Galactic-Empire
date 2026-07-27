@@ -1,0 +1,20 @@
+{
+    "name": "GalacticEmpire.Feature.Galaxy.Presentation",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0d4fbb360851f1f4088f149203d45455",
+        "GUID:e53c5ecc56c02c845abf7d9e9402a4a8",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:0b8ecafd518a03b41b3e26697fb844c7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
