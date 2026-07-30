@@ -14,7 +14,7 @@ namespace GalacticEmpire.Editor
     [InitializeOnLoad]
     public static class SceneValidator
     {
-        private static readonly List<string> _errors   = new();
+        private static readonly List<string> _errors = new();
         private static readonly List<string> _warnings = new();
 
         // Auto-validate before entering Play mode
@@ -143,9 +143,9 @@ namespace GalacticEmpire.Editor
         public static void ShowWindow(List<string> errors, List<string> warnings)
         {
             var win = GetWindow<SceneValidatorWindow>("⚠️ Scene Validation");
-            win._errors   = errors;
+            win._errors = errors;
             win._warnings = warnings;
-            win.minSize   = new Vector2(400, 300);
+            win.minSize = new Vector2(400, 300);
             win.Show();
         }
 

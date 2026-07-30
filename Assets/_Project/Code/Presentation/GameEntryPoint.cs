@@ -1,9 +1,11 @@
-
+// Main game loop - no MonoBehaviour, VContainer manages the lifecycle.
 
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Fleet.Application;
+using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Station.Application;
 using VContainer.Unity;
 
@@ -12,10 +14,11 @@ namespace GalacticEmpire.Presentation
     /// <summary>Starts all game systems on scene load.</summary>
     public sealed class GameEntryPoint : IInitializable, IDisposable
     {
-        private readonly IFleetRepository _fleetRepository;
+        private readonly IFleetRepository   _fleetRepository;
         private readonly IStationRepository _stationRepository;
         private readonly IResourceService  _resourceService;
-        private readonly GameConfigSO  _config;
+        private readonly IGalaxyService  _galaxyService;
+        private readonly GameConfigSO _config;
 
         private CancellationTokenSource _cts;
 
@@ -23,11 +26,13 @@ namespace GalacticEmpire.Presentation
             IFleetRepository fleetRepository,
             IStationRepository stationRepository,
             IResourceService resourceService,
+            IGalaxyService galaxyService,
             GameConfigSO config)
         {
-            _fleetRepository   = fleetRepository;
+            _fleetRepository  = fleetRepository;
             _stationRepository = stationRepository;
-            _resourceService   = resourceService;
+            _resourceService = resourceService;
+            _galaxyService = galaxyService;
             _config = config;
         }
 
@@ -37,6 +42,7 @@ namespace GalacticEmpire.Presentation
 
             InitializeStation();
             InitializeFleet();
+            InitializeGalaxy();
             StartEconomy();
 
             GELogger.Info(LogCategory.System, "All systems online.");
@@ -66,6 +72,25 @@ namespace GalacticEmpire.Presentation
             {
                 var station = _stationRepository.Get();
                 GELogger.Info(LogCategory.Station, $"Station loaded: {station.Name} | Modules: {station.TotalModules}");
+            }
+        }
+
+        private void InitializeGalaxy()
+        {
+            var galaxy = _galaxyService.GetGalaxy();
+
+            if (galaxy == null)
+            {
+                // First launch - generate a fresh galaxy
+                galaxy = _galaxyService.GenerateGalaxy(sectorCount: 30);
+                GELogger.Info(LogCategory.System,
+                    $"Galaxy generated: {galaxy.TotalSectors} sectors.");
+            }
+            else
+            {
+                GELogger.Info(LogCategory.System,
+                    $"Galaxy loaded: {galaxy.TotalSectors} sectors, " +
+                    $"{galaxy.DiscoveredCount} discovered.");
             }
         }
 

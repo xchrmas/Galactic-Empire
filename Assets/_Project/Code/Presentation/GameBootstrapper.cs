@@ -2,6 +2,8 @@
 
 using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Fleet.Application;
+using GalacticEmpire.Feature.Galaxy.Application;
+using GalacticEmpire.Feature.Galaxy.Infrastructure;
 using GalacticEmpire.Feature.Station.Application;
 using GalacticEmpire.Feature.Station.Infrastructure;
 using GalacticEmpire.Infrastructure;
@@ -17,6 +19,7 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private FleetRepositorySO _fleetRepository;
         [SerializeField] private StationRepositorySO _stationRepository;
         [SerializeField] private ResourceRepositorySO _resourceRepository;
+        [SerializeField] private GalaxyRepositorySO _galaxyRepository;
         [SerializeField] private GameConfigSO _config;
 
         protected override void Configure(IContainerBuilder builder)
@@ -24,16 +27,17 @@ namespace GalacticEmpire.Presentation
             // Config is needed everywhere
             builder.RegisterInstance(_config);
 
-            // Repositories - registered as interfaces so nothing depends on the SO directly
+            // Repositories
             builder.RegisterInstance(_fleetRepository).As<IFleetRepository>();
             builder.RegisterInstance(_stationRepository).As<IStationRepository>();
             builder.RegisterInstance(_resourceRepository).As<IResourceRepository>();
+            builder.RegisterInstance(_galaxyRepository).As<IGalaxyRepository>();
 
-            // Production service - runs the economy tick loop
-            builder.Register<IResourceService, ResourceProductionService>(VContainer.Lifetime.Singleton);
-
-            // Fleet service - handles all fleet use cases
-            builder.Register<IFleetService, FleetService>(VContainer.Lifetime.Singleton);
+            // Services
+            builder.Register<IResourceService, ResourceProductionService>(Lifetime.Singleton);
+            builder.Register<IFleetService, FleetService>(Lifetime.Singleton);
+            builder.Register<GalaxyGeneratorService>(Lifetime.Singleton);
+            builder.Register<IGalaxyService, GalaxyService>(Lifetime.Singleton);
 
             builder.RegisterEntryPoint<GameEntryPoint>();
         }
