@@ -75,3 +75,8 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 # Rider IDE settings
 .idea/
+# Third-party plugins - installed locally, not tracked in Git
+Assets/Plugins/
+Assets/Plugins.meta
+CodeHealthReport.md
+PROJECT_ANALYSIS.md
