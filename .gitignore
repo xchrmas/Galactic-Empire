@@ -78,3 +78,5 @@ crashlytics-build.properties
 # Third-party plugins - installed locally, not tracked in Git
 Assets/Plugins/
 Assets/Plugins.meta
+CodeHealthReport.md
+PROJECT_ANALYSIS.md
