@@ -4,6 +4,7 @@ using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Galaxy.Infrastructure;
+using GalacticEmpire.Feature.Galaxy.Presentation;
 using GalacticEmpire.Feature.Station.Application;
 using GalacticEmpire.Feature.Station.Infrastructure;
 using GalacticEmpire.Infrastructure;
@@ -20,6 +21,7 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private StationRepositorySO _stationRepository;
         [SerializeField] private ResourceRepositorySO _resourceRepository;
         [SerializeField] private GalaxyRepositorySO _galaxyRepository;
+        [SerializeField] private GalaxyMapPresenter _galaxyMapPresenter;
         [SerializeField] private GameConfigSO _config;
 
         protected override void Configure(IContainerBuilder builder)
@@ -38,6 +40,9 @@ namespace GalacticEmpire.Presentation
             builder.Register<IFleetService, FleetService>(Lifetime.Singleton);
             builder.Register<GalaxyGeneratorService>(Lifetime.Singleton);
             builder.Register<IGalaxyService, GalaxyService>(Lifetime.Singleton);
+
+            // Inject dependencies into GalaxyMapPresenter MonoBehaviour
+            builder.RegisterComponent(_galaxyMapPresenter);
 
             builder.RegisterEntryPoint<GameEntryPoint>();
         }
