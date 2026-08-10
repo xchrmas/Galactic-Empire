@@ -13,7 +13,7 @@ namespace GalacticEmpire.Core
         Core,
         Fleet,
         Station,
-        Battle,
+        Battle,    // ← добавь
         Economy,
         Network,
         UI,
