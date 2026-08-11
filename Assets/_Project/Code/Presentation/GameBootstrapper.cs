@@ -1,6 +1,7 @@
 // Entry point - configures VContainer DI container.
 
 using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Battle.Application;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Galaxy.Infrastructure;
@@ -38,6 +39,8 @@ namespace GalacticEmpire.Presentation
             // Services
             builder.Register<IResourceService, ResourceProductionService>(Lifetime.Singleton);
             builder.Register<IFleetService, FleetService>(Lifetime.Singleton);
+            builder.Register<CombatTickService>(Lifetime.Singleton);
+            builder.Register<IBattleService, BattleService>(Lifetime.Singleton);
             builder.Register<GalaxyGeneratorService>(Lifetime.Singleton);
             builder.Register<IGalaxyService, GalaxyService>(Lifetime.Singleton);
 
