@@ -1,0 +1,21 @@
+{
+    "name": "GalacticEmpire.Feature.UI.Screens",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0d4fbb360851f1f4088f149203d45455",
+        "GUID:25d176f333c9857438fec638726a23b1",
+        "GUID:0b8ecafd518a03b41b3e26697fb844c7",
+        "GUID:65107589ecab0c943a6d0c6d46abfe0b",
+        "GUID:305ed8fd43207f24a9341355133ae3be",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

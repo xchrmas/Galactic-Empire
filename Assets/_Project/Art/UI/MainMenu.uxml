@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="root" style="flex: 1; background-color: rgba(0,0,0,0); justify-content: center; align-items: center;">
+
+        <!-- Title -->
+        <ui:VisualElement name="title-container" style="margin-bottom: 60px; align-items: center;">
+            <ui:Label name="title-label" text="GALACTIC EMPIRE"
+                      style="font-size: 48px; color: rgba(100, 180, 255, 1); -unity-font-style: bold; letter-spacing: 8px;"/>
+            <ui:Label name="subtitle-label" text="Conquer the Stars"
+                      style="font-size: 16px; color: rgba(150, 200, 255, 0.6); letter-spacing: 4px; margin-top: 8px;"/>
+        </ui:VisualElement>
+
+        <!-- Play Button -->
+        <ui:Button name="play-button" text="ENTER THE GALAXY"
+                   style="width: 280px; height: 56px; font-size: 18px; -unity-font-style: bold;
+                   background-color: rgba(30, 90, 180, 0.8); color: rgba(200, 230, 255, 1);
+                   border-color: rgba(100, 180, 255, 0.6); border-width: 1px;
+                   border-radius: 4px; letter-spacing: 2px; margin-bottom: 16px;
+                   transition-duration: 0.2s;"/>
+
+        <!-- Version -->
+        <ui:Label name="version-label" text="v0.1.0 Alpha"
+                  style="font-size: 11px; color: rgba(255,255,255,0.3); position: absolute; bottom: 20px; right: 20px;"/>
+
+    </ui:VisualElement>
+</ui:UXML>

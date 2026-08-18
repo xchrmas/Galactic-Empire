@@ -13,7 +13,7 @@ namespace GalacticEmpire.Core
         Core,
         Fleet,
         Station,
-        Battle,    // ← добавь
+        Battle,
         Economy,
         Network,
         UI,
@@ -25,8 +25,7 @@ namespace GalacticEmpire.Core
     public static class GELogger
     {
         // Log file path-written next to the project
-            private static readonly string LogFilePath =
-            Path.Combine(Application.persistentDataPath, "GalacticEmpire.log");
+            private static readonly string LogFilePath = Path.Combine(Application.persistentDataPath, "GalacticEmpire.log");
 
         private static bool _initialized;
 

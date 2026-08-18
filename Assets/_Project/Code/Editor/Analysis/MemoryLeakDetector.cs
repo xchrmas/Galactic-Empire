@@ -1,6 +1,6 @@
+// Layer: Editor | Detects potential memory leaks after exiting Play mode.
+// Checks for lingering objects, uncompleted UniTasks, and orphaned subscriptions.
 
-
-// Editor  Detects potential memory leaks after exiting Play mode.
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -57,7 +57,7 @@ namespace GalacticEmpire.Editor
             {
                 if (obj.scene.name == "DontDestroyOnLoad" && obj.hideFlags == HideFlags.None)
                 {
-                    _warnings.Add($"⚠️ DontDestroyOnLoad object still alive: '{obj.name}' - was it properly disposed?");
+                    _warnings.Add($"⚠️ DontDestroyOnLoad object still alive: '{obj.name}' — was it properly disposed?");
                 }
             }
         }
@@ -81,15 +81,11 @@ namespace GalacticEmpire.Editor
             foreach (var assembly in assemblies)
             {
                 if (!assembly.FullName.StartsWith("GalacticEmpire"))
-                {
                     continue;
-                }
 
                 // Skip Editor assemblies — they intentionally hold static state
                 if (assembly.FullName.Contains("Editor"))
-                {
                     continue;
-                }
 
                 foreach (var type in assembly.GetTypes())
                 {
@@ -114,7 +110,6 @@ namespace GalacticEmpire.Editor
             }
         }
 
-
         private static int GetActiveGameObjectCount()
         {
             return Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None).Length;
@@ -131,9 +126,7 @@ namespace GalacticEmpire.Editor
             Debug.LogWarning($"[MemoryLeakDetector] {_warnings.Count} potential issue(s) found:");
 
             foreach (var warning in _warnings)
-            {
                 Debug.LogWarning($"[MemoryLeakDetector] {warning}");
-            }
         }
     }
 }

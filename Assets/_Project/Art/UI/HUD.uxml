@@ -1,0 +1,65 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="root" style="flex: 1; background-color: rgba(0,0,0,0);">
+
+        <!-- Top resource bar -->
+        <ui:VisualElement name="resource-bar"
+            style="flex-direction: row; justify-content: center; align-items: center;
+                   background-color: rgba(0,0,0,0.6); padding: 8px 20px;
+                   border-bottom-color: rgba(100,180,255,0.2); border-bottom-width: 1px;">
+
+            <!-- Metal -->
+            <ui:VisualElement name="metal-container" style="flex-direction: row; align-items: center; margin-right: 24px;">
+                <ui:Label text="⚙" style="font-size: 16px; color: rgba(180,180,200,1); margin-right: 6px;"/>
+                <ui:Label name="metal-value" text="0"
+                    style="font-size: 16px; color: rgba(200,220,255,1); -unity-font-style: bold; min-width: 60px;"/>
+            </ui:VisualElement>
+
+            <!-- Energy -->
+            <ui:VisualElement name="energy-container" style="flex-direction: row; align-items: center; margin-right: 24px;">
+                <ui:Label text="⚡" style="font-size: 16px; color: rgba(255,220,80,1); margin-right: 6px;"/>
+                <ui:Label name="energy-value" text="0"
+                    style="font-size: 16px; color: rgba(200,220,255,1); -unity-font-style: bold; min-width: 60px;"/>
+            </ui:VisualElement>
+
+            <!-- Crystals -->
+            <ui:VisualElement name="crystals-container" style="flex-direction: row; align-items: center; margin-right: 24px;">
+                <ui:Label text="💎" style="font-size: 16px; color: rgba(120,200,255,1); margin-right: 6px;"/>
+                <ui:Label name="crystals-value" text="0"
+                    style="font-size: 16px; color: rgba(200,220,255,1); -unity-font-style: bold; min-width: 60px;"/>
+            </ui:VisualElement>
+
+            <!-- Dark Matter -->
+            <ui:VisualElement name="dark-matter-container" style="flex-direction: row; align-items: center;">
+                <ui:Label text="✦" style="font-size: 16px; color: rgba(180,100,255,1); margin-right: 6px;"/>
+                <ui:Label name="dark-matter-value" text="0"
+                    style="font-size: 16px; color: rgba(200,220,255,1); -unity-font-style: bold; min-width: 60px;"/>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+        <!-- Bottom action bar -->
+        <ui:VisualElement name="action-bar"
+            style="position: absolute; bottom: 0; left: 0; right: 0;
+                   flex-direction: row; justify-content: center;
+                   background-color: rgba(0,0,0,0.6); padding: 10px;
+                   border-top-color: rgba(100,180,255,0.2); border-top-width: 1px;">
+
+            <ui:Button name="galaxy-button" text="GALAXY"
+                style="width: 100px; height: 36px; font-size: 12px; margin-right: 8px;
+                       background-color: rgba(20,60,120,0.8); color: rgba(180,220,255,1);
+                       border-color: rgba(100,180,255,0.4); border-width: 1px; border-radius: 3px;"/>
+
+            <ui:Button name="station-button" text="STATION"
+                style="width: 100px; height: 36px; font-size: 12px; margin-right: 8px;
+                       background-color: rgba(20,60,120,0.8); color: rgba(180,220,255,1);
+                       border-color: rgba(100,180,255,0.4); border-width: 1px; border-radius: 3px;"/>
+
+            <ui:Button name="fleet-button" text="FLEET"
+                style="width: 100px; height: 36px; font-size: 12px;
+                       background-color: rgba(20,60,120,0.8); color: rgba(180,220,255,1);
+                       border-color: rgba(100,180,255,0.4); border-width: 1px; border-radius: 3px;"/>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

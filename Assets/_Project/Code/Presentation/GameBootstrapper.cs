@@ -8,6 +8,8 @@ using GalacticEmpire.Feature.Galaxy.Infrastructure;
 using GalacticEmpire.Feature.Galaxy.Presentation;
 using GalacticEmpire.Feature.Station.Application;
 using GalacticEmpire.Feature.Station.Infrastructure;
+using GalacticEmpire.Feature.UI.Core;
+using GalacticEmpire.Feature.UI.Screens;
 using GalacticEmpire.Infrastructure;
 using UnityEngine;
 using VContainer;
@@ -23,6 +25,10 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private ResourceRepositorySO _resourceRepository;
         [SerializeField] private GalaxyRepositorySO _galaxyRepository;
         [SerializeField] private GalaxyMapPresenter _galaxyMapPresenter;
+
+        [SerializeField] private UIManager _uiManager;
+        [SerializeField] private MainMenuScreen _mainMenuScreen;
+        [SerializeField] private HUDScreen _hudScreen;
         [SerializeField] private GameConfigSO _config;
 
         protected override void Configure(IContainerBuilder builder)
@@ -39,12 +45,15 @@ namespace GalacticEmpire.Presentation
             // Services
             builder.Register<IResourceService, ResourceProductionService>(Lifetime.Singleton);
             builder.Register<IFleetService, FleetService>(Lifetime.Singleton);
-            builder.Register<CombatTickService>(Lifetime.Singleton);
-            builder.Register<IBattleService, BattleService>(Lifetime.Singleton);
             builder.Register<GalaxyGeneratorService>(Lifetime.Singleton);
             builder.Register<IGalaxyService, GalaxyService>(Lifetime.Singleton);
+            builder.Register<CombatTickService>(Lifetime.Singleton);
+            builder.Register<IBattleService, BattleService>(Lifetime.Singleton);
 
-            // Inject dependencies into GalaxyMapPresenter MonoBehaviour
+            // UI
+            builder.RegisterComponent(_uiManager);
+            builder.RegisterComponent(_mainMenuScreen);
+            builder.RegisterComponent(_hudScreen);
             builder.RegisterComponent(_galaxyMapPresenter);
 
             builder.RegisterEntryPoint<GameEntryPoint>();

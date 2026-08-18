@@ -119,6 +119,133 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &164155403
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 164155405}
+  - component: {fileID: 164155404}
+  - component: {fileID: 164155407}
+  - component: {fileID: 164155406}
+  m_Layer: 5
+  m_Name: UI_HUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &164155404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164155403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: d835b2a9475d7db43a047e5a559ae998, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: c9bf392ec7ef95e4fb0f6754becde230, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &164155405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164155403}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &164155406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164155403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b4252158cb8d14f808ae51f9811088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.UI.Screens::GalacticEmpire.Feature.UI.Screens.HUDScreen
+  _fadeDuration: 0.3
+  _document: {fileID: 164155404}
+--- !u!225 &164155407
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164155403}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!1 &165118570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 165118572}
+  - component: {fileID: 165118571}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &165118571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165118570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a0a289d7e4bdaa41ac98620452c0eca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.UI.Core::GalacticEmpire.Feature.UI.Core.UIManager
+--- !u!4 &165118572
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165118570}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &239514884
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,7 +729,7 @@ GameObject:
   m_Component:
   - component: {fileID: 535506054}
   - component: {fileID: 535506056}
-  - component: {fileID: 535506055}
+  - component: {fileID: 535506057}
   m_Layer: 0
   m_Name: '[GalaxyMapRenderer]'
   m_TagString: Untagged
@@ -625,19 +752,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 738452466}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &535506055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 535506053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f7cbe8b088fab846a7d90bb0f92a4db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: GalacticEmpire.Feature.Galaxy.Presentation::GalacticEmpire.Feature.Galaxy.Presentation.GalaxyMapPresenter
-  _renderer: {fileID: 535506056}
 --- !u!114 &535506056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,6 +775,19 @@ MonoBehaviour:
   _nebulaColor: {r: 0.4, g: 0.2, b: 0.8, a: 1}
   _blackHoleColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
   _ownedColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+--- !u!114 &535506057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535506053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f7cbe8b088fab846a7d90bb0f92a4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.Galaxy.Presentation::GalacticEmpire.Feature.Galaxy.Presentation.GalaxyMapPresenter
+  _renderer: {fileID: 535506056}
 --- !u!1 &541196715
 GameObject:
   m_ObjectHideFlags: 0
@@ -1064,7 +1191,10 @@ MonoBehaviour:
   _stationRepository: {fileID: 11400000, guid: aec9e055a3f2d0b4bbb8d724d4e837ab, type: 2}
   _resourceRepository: {fileID: 11400000, guid: 8031b067de087ab4d8fa3aa2141f7a8d, type: 2}
   _galaxyRepository: {fileID: 11400000, guid: 24d1cf295954a50439b88a407c1dffd4, type: 2}
-  _galaxyMapPresenter: {fileID: 535506055}
+  _galaxyMapPresenter: {fileID: 535506057}
+  _uiManager: {fileID: 165118571}
+  _mainMenuScreen: {fileID: 1342669489}
+  _hudScreen: {fileID: 164155406}
   _config: {fileID: 11400000, guid: 262d8f56a8d279143ac50ff6599d6fb6, type: 2}
 --- !u!114 &1198562954
 MonoBehaviour:
@@ -1185,6 +1315,89 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1242438947}
   m_Mesh: {fileID: 4300002, guid: d3c72eb619c9ab640803adf4c43f367c, type: 3}
+--- !u!1 &1342669486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1342669488}
+  - component: {fileID: 1342669487}
+  - component: {fileID: 1342669490}
+  - component: {fileID: 1342669489}
+  m_Layer: 5
+  m_Name: UI_MainMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1342669487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342669486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: d2987cd6cd94c454b9719455175770b4, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: b92fe944fbc08e843a5155748b0faec1, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &1342669488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342669486}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1342669489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342669486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2535fcf0cb4bcd04f994fa257f43fd5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.UI.Screens::GalacticEmpire.Feature.UI.Screens.MainMenuScreen
+  _fadeDuration: 0.3
+  _document: {fileID: 1342669487}
+--- !u!225 &1342669490
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342669486}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1691874617
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,3 +1754,6 @@ SceneRoots:
   - {fileID: 541196717}
   - {fileID: 1198562952}
   - {fileID: 738452466}
+  - {fileID: 1342669488}
+  - {fileID: 164155405}
+  - {fileID: 165118572}
