@@ -39,6 +39,10 @@ namespace GalacticEmpire.Feature.UI.Core
             CancelCurrentAnimation();
             _cts = new CancellationTokenSource();
 
+            // Ensure CanvasGroup exists before animating
+            if (_canvasGroup == null)
+                _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
             gameObject.SetActive(true);
             IsVisible = true;
 

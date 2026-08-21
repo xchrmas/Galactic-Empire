@@ -111,17 +111,36 @@ namespace GalacticEmpire.Presentation
         private void StartEconomy()
         {
             _cts = new CancellationTokenSource();
-            _resourceService.StartProductionLoopAsync(_cts.Token).Forget();
+            RunEconomyLoopAsync(_cts.Token).Forget();
 
             var wallet = _resourceService.GetCurrentWallet();
             GELogger.Info(LogCategory.Economy,
                 $"Economy started. Metal: {wallet.Get(ResourceType.Metal)} | Energy: {wallet.Get(ResourceType.Energy)}");
         }
 
+        // Runs production tick and refreshes HUD every interval
+        private async UniTaskVoid RunEconomyLoopAsync(CancellationToken ct)
+        {
+            GELogger.Info(LogCategory.Economy, "Production loop is running.");
+
+            while (!ct.IsCancellationRequested)
+            {
+                await UniTask.Delay(
+                    System.TimeSpan.FromSeconds(_config.BaseProductionRate),
+                    cancellationToken: ct);
+
+                _resourceService.Tick();
+
+                // Refresh HUD if it's visible
+                if (_hudScreen.IsVisible)
+                {
+                    _hudScreen.RefreshResources();
+                }
+            }
+        }
+
         private async UniTaskVoid InitializeUI()
         {
-            GELogger.Info(LogCategory.UI, "InitializeUI called.");
-
             // Register all screens
             _uiManager.Register(_mainMenuScreen);
             _uiManager.Register(_hudScreen);
