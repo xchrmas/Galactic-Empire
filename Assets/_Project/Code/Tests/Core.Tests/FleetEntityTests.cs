@@ -86,7 +86,7 @@ namespace GalacticEmpire.Core.Tests
             var ships = new List<ShipEntity> { ship }.AsReadOnly();
             var fleet = FleetEntity.Create("Alpha Fleet", ships);
 
-            var dispatched = fleet.Dispatch();
+            var dispatched = fleet.Dispatch(Guid.NewGuid());
 
             Assert.That(dispatched.Status, Is.EqualTo(FleetStatus.Moving));
         }
@@ -98,7 +98,7 @@ namespace GalacticEmpire.Core.Tests
             var ships = new List<ShipEntity> { ship }.AsReadOnly();
             var fleet = FleetEntity.Create("Alpha Fleet", ships);
 
-            fleet.Dispatch();
+            fleet.Dispatch(Guid.NewGuid());
 
             Assert.That(fleet.Status, Is.EqualTo(FleetStatus.Idle));
         }
@@ -111,7 +111,7 @@ namespace GalacticEmpire.Core.Tests
             var fleet = FleetEntity.Create("Alpha Fleet", ships);
             var destroyed = fleet with { Status = FleetStatus.Destroyed };
 
-            Assert.Throws<InvalidOperationException>(() => destroyed.Dispatch());
+            Assert.Throws<InvalidOperationException>(() => destroyed.Dispatch(Guid.NewGuid()));
         }
 
         [Test]
@@ -121,17 +121,52 @@ namespace GalacticEmpire.Core.Tests
             var ships = new List<ShipEntity> { ship }.AsReadOnly();
             var fleet = FleetEntity.Create("Alpha Fleet", ships).EnterBattle();
 
-            Assert.Throws<InvalidOperationException>(() => fleet.Dispatch());
+            Assert.Throws<InvalidOperationException>(() => fleet.Dispatch(Guid.NewGuid()));
+        }
+
+        [Test]
+        public void Dispatch_SetsTargetSectorId()
+        {
+            var ship = CreateTestShip();
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships);
+            var targetSectorId = Guid.NewGuid();
+
+            var dispatched = fleet.Dispatch(targetSectorId);
+
+            Assert.That(dispatched.TargetSectorId, Is.EqualTo(targetSectorId));
+        }
+
+        [Test]
+        public void Dispatch_WithEmptyGuid_ThrowsArgumentException()
+        {
+            var ship = CreateTestShip();
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships);
+
+            Assert.Throws<ArgumentException>(() => fleet.Dispatch(Guid.Empty));
         }
 
         // Recall
+
+        [Test]
+        public void Recall_ClearsTargetSectorId()
+        {
+            var ship = CreateTestShip();
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch(Guid.NewGuid());
+
+            var recalled = fleet.Recall();
+
+            Assert.That(recalled.TargetSectorId, Is.Null);
+        }
 
         [Test]
         public void Recall_ChangesStatusToIdle()
         {
             var ship = CreateTestShip();
             var ships = new List<ShipEntity> { ship }.AsReadOnly();
-            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch(Guid.NewGuid());
 
             var recalled = fleet.Recall();
 
@@ -156,7 +191,7 @@ namespace GalacticEmpire.Core.Tests
         {
             var ship = CreateTestShip();
             var ships = new List<ShipEntity> { ship }.AsReadOnly();
-            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch(Guid.NewGuid());
 
             var inBattle = fleet.EnterBattle();
 
@@ -181,7 +216,7 @@ namespace GalacticEmpire.Core.Tests
         {
             var ship = CreateTestShip();
             var ships = new List<ShipEntity> { ship }.AsReadOnly();
-            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch().EnterBattle();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch(Guid.NewGuid()).EnterBattle();
 
             var retreating = fleet.Retreat();
 
@@ -264,7 +299,7 @@ namespace GalacticEmpire.Core.Tests
         {
             var ship1 = CreateTestShip("Destroyer");
             var ship2 = CreateTestShip("Cruiser");
-            var fleet1 = FleetEntity.Create("Alpha Fleet", new List<ShipEntity> { ship1 }.AsReadOnly()).Dispatch();
+            var fleet1 = FleetEntity.Create("Alpha Fleet", new List<ShipEntity> { ship1 }.AsReadOnly()).Dispatch(Guid.NewGuid());
             var fleet2 = FleetEntity.Create("Beta Fleet", new List<ShipEntity> { ship2 }.AsReadOnly());
 
             var merged = fleet1.MergeWith(fleet2);

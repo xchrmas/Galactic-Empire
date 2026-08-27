@@ -17,8 +17,14 @@ namespace GalacticEmpire.Feature.UI.Screens
 
         public event System.Action OnPlayPressed;
 
-        protected override void Awake()
+
+        private void OnEnable()
         {
+            // Bound once - UIDocument builds rootVisualElement in its own OnEnable,
+            // so this can't happen safely in Awake()
+            if (_playButton != null)
+                return;
+
             if (_document == null)
             {
                 Debug.LogError("[MainMenuScreen] UIDocument not assigned.");
@@ -29,7 +35,7 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             if (root == null)
             {
-                Debug.LogError("[MainMenuScreen] rootVisualElement is null.");
+                Debug.LogError("[MainMenuScreen] rootVisualElement is null. UIDocument may not be enabled yet.");
                 return;
             }
 
@@ -42,8 +48,6 @@ namespace GalacticEmpire.Feature.UI.Screens
             }
 
             _playButton.clicked += HandlePlayPressed;
-
-            base.Awake();
         }
 
         protected override void OnShow()

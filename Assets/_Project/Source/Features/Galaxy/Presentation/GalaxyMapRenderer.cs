@@ -1,6 +1,7 @@
 // Renders all galaxy sectors as interactive nodes on top of the SGT background.
 // Each sector gets a GameObject with a sprite - color indicates type and ownership.
 
+using System;
 using System.Collections.Generic;
 using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Galaxy.Domain;
@@ -31,6 +32,9 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
         private IGalaxyService _galaxyService;
         private readonly List<GameObject> _sectorObjects = new();
         private readonly List<LineRenderer> _connectionLines = new();
+
+        // Raised when the player clicks a discovered sector
+        public event Action<SectorEntity> OnSectorSelected;
 
         // Call this from GalaxyMapPresenter after VContainer injection
         public void Initialize(IGalaxyService galaxyService)
@@ -71,10 +75,32 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
             if (renderer != null)
                 renderer.color = GetSectorColor(sector);
 
+            // Undiscovered sectors are hidden and can't be clicked yet
+            if (sector.IsDiscovered)
+                WireClickHandler(go, sector);
+
             // Hide undiscovered sectors (fog of war)
             go.SetActive(sector.IsDiscovered);
 
             _sectorObjects.Add(go);
+        }
+
+        private void WireClickHandler(GameObject go, SectorEntity sector)
+        {
+            if (go.GetComponent<Collider2D>() == null)
+                go.AddComponent<CircleCollider2D>();
+
+            var handler = go.GetComponent<SectorClickHandler>();
+            if (handler == null)
+                handler = go.AddComponent<SectorClickHandler>();
+
+            handler.Bind(sector);
+            handler.OnClicked += HandleSectorClicked;
+        }
+
+        private void HandleSectorClicked(SectorEntity sector)
+        {
+            OnSectorSelected?.Invoke(sector);
         }
 
         private void DrawConnections(SectorEntity sector, GalaxyMapEntity galaxy)
@@ -120,6 +146,11 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
 
             // Simple circle sprite as fallback
             sr.sprite = CreateCircleSprite();
+
+            // Matches the circle sprite so clicks land where the visual is
+            var collider = go.AddComponent<CircleCollider2D>();
+            collider.radius = 0.5f;
+
             return go;
         }
 
@@ -164,10 +195,20 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
         private void Clear()
         {
             foreach (var go in _sectorObjects)
-                if (go != null) Destroy(go);
+            {
+                if (go == null) continue;
+
+                var handler = go.GetComponent<SectorClickHandler>();
+                if (handler != null)
+                    handler.OnClicked -= HandleSectorClicked;
+
+                Destroy(go);
+            }
 
             foreach (var line in _connectionLines)
+            {
                 if (line != null) Destroy(line.gameObject);
+            }
 
             _sectorObjects.Clear();
             _connectionLines.Clear();

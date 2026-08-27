@@ -6,7 +6,9 @@
         "GalacticEmpire.Feature.Fleet.Domain",
         "GalacticEmpire.Application",
         "UniTask",
-        "GalacticEmpire.Feature.Station.Application"
+        "GalacticEmpire.Feature.Station.Application",
+        "GalacticEmpire.Feature.Galaxy.Application",
+        "GalacticEmpire.Feature.Galaxy.Domain"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

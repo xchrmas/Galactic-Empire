@@ -16,6 +16,9 @@ namespace GalacticEmpire.Feature.Fleet.Domain
         public FleetStatus Status { get; init; }
         public IReadOnlyList<ShipEntity> Ships { get; init; }
 
+        // Set when the fleet is dispatched - null while Idle or after Recall
+        public Guid? TargetSectorId { get; init; }
+
         // Computed from ships - always up to date
         public int ShipCount => Ships.Count;
         public bool IsDestroyed => Status == FleetStatus.Destroyed || Ships.Count == 0;
@@ -41,8 +44,8 @@ namespace GalacticEmpire.Feature.Fleet.Domain
             };
         }
 
-        /// <summary>Send the fleet to a target - changes status to Moving.</summary>
-        public FleetEntity Dispatch()
+        /// <summary>Send the fleet to a target sector - changes status to Moving.</summary>
+        public FleetEntity Dispatch(Guid targetSectorId)
         {
             if (IsDestroyed)
                 throw new InvalidOperationException($"Fleet {Name} is destroyed and cannot be dispatched.");
@@ -50,7 +53,10 @@ namespace GalacticEmpire.Feature.Fleet.Domain
             if (Status == FleetStatus.InBattle)
                 throw new InvalidOperationException($"Fleet {Name} is already in battle.");
 
-            return this with { Status = FleetStatus.Moving };
+            if (targetSectorId == Guid.Empty)
+                throw new ArgumentException("Target sector is required.", nameof(targetSectorId));
+
+            return this with { Status = FleetStatus.Moving, TargetSectorId = targetSectorId };
         }
 
         /// <summary>Recall the fleet back to station.</summary>
@@ -59,7 +65,7 @@ namespace GalacticEmpire.Feature.Fleet.Domain
             if (IsDestroyed)
                 throw new InvalidOperationException($"Fleet {Name} is destroyed.");
 
-            return this with { Status = FleetStatus.Idle };
+            return this with { Status = FleetStatus.Idle, TargetSectorId = null };
         }
 
         /// <summary>Engage the enemy - fleet enters battle.</summary>

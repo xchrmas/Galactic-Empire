@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Fleet.Domain;
+using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Station.Application;
 
 namespace GalacticEmpire.Feature.Fleet.Application
@@ -15,6 +16,7 @@ namespace GalacticEmpire.Feature.Fleet.Application
     {
         private readonly IFleetRepository    _fleetRepository;
         private readonly IResourceRepository _resourceRepository;
+        private readonly IGalaxyService      _galaxyService;
         private readonly GameConfigSO        _config;
 
         private readonly List<FleetEntity> _fleets = new();
@@ -22,10 +24,12 @@ namespace GalacticEmpire.Feature.Fleet.Application
         public FleetService(
             IFleetRepository fleetRepository,
             IResourceRepository resourceRepository,
+            IGalaxyService galaxyService,
             GameConfigSO config)
         {
             _fleetRepository    = fleetRepository;
             _resourceRepository = resourceRepository;
+            _galaxyService      = galaxyService;
             _config             = config;
         }
 
@@ -76,15 +80,25 @@ namespace GalacticEmpire.Feature.Fleet.Application
             return fleet;
         }
 
-        /// <summary>Dispatches a fleet toward a target.</summary>
+        /// <summary>Dispatches a fleet toward a target sector - validates the sector is discovered first.</summary>
         public FleetEntity Dispatch(DispatchFleetCommand cmd)
         {
             var fleet = GetFleetOrThrow(cmd.FleetId);
-            var updated = fleet.Dispatch();
+
+            var galaxy = _galaxyService.GetGalaxy();
+            var targetSector = galaxy?.GetSector(cmd.TargetSectorId);
+
+            if (targetSector == null)
+                throw new InvalidOperationException($"Sector {cmd.TargetSectorId} not found.");
+
+            if (!targetSector.IsDiscovered)
+                throw new InvalidOperationException($"Sector {targetSector.Name} has not been discovered yet.");
+
+            var updated = fleet.Dispatch(cmd.TargetSectorId);
 
             UpdateFleet(fleet, updated);
 
-            GELogger.Info(LogCategory.Fleet, $"Fleet '{fleet.Name}' dispatched.");
+            GELogger.Info(LogCategory.Fleet, $"Fleet '{fleet.Name}' dispatched to {targetSector.Name}.");
             return updated;
         }
 
