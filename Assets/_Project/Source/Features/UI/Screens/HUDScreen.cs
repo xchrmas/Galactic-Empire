@@ -18,9 +18,12 @@ namespace GalacticEmpire.Feature.UI.Screens
         private Label _energyLabel;
         private Label _crystalsLabel;
         private Label _darkMatterLabel;
+        private Button _galaxyButton;
 
         private IResourceRepository _resourceRepository;
         private bool _uiInitialized;
+
+        public event System.Action OnGalaxyPressed;
 
         public void Initialize(IResourceRepository resourceRepository)
         {
@@ -54,13 +57,26 @@ namespace GalacticEmpire.Feature.UI.Screens
             _energyLabel = root.Q<Label>("energy-value");
             _crystalsLabel = root.Q<Label>("crystals-value");
             _darkMatterLabel = root.Q<Label>("dark-matter-value");
+            _galaxyButton = root.Q<Button>("galaxy-button");
 
             if (_metalLabel == null) Debug.LogWarning("[HUDScreen] Label 'metal-value' not found in UXML.");
             if (_energyLabel == null) Debug.LogWarning("[HUDScreen] Label 'energy-value' not found in UXML.");
             if (_crystalsLabel == null) Debug.LogWarning("[HUDScreen] Label 'crystals-value' not found in UXML.");
             if (_darkMatterLabel == null) Debug.LogWarning("[HUDScreen] Label 'dark-matter-value' not found in UXML.");
+            if (_galaxyButton == null) Debug.LogWarning("[HUDScreen] Button 'galaxy-button' not found in UXML.");
+
+            if (_galaxyButton != null)
+                _galaxyButton.clicked += HandleGalaxyPressed;
+
+            Debug.Log($"[HUDScreen] Init complete. galaxyButton null: {_galaxyButton == null}, panel: {root.panel}, picking mode root: {root.pickingMode}");
 
             _uiInitialized = true;
+        }
+
+        private void HandleGalaxyPressed()
+        {
+            Debug.Log("[HUDScreen] HandleGalaxyPressed invoked!");
+            OnGalaxyPressed?.Invoke();
         }
 
         /// <summary>Call this every production tick to update resource display.</summary>
@@ -81,6 +97,14 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             if (_darkMatterLabel != null)
                 _darkMatterLabel.text = $"{wallet.Get(ResourceType.DarkMatter):F0}";
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (_galaxyButton != null)
+                _galaxyButton.clicked -= HandleGalaxyPressed;
         }
     }
 }

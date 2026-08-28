@@ -20,9 +20,11 @@ namespace GalacticEmpire.Presentation
         private readonly IStationRepository _stationRepository;
         private readonly IResourceService _resourceService;
         private readonly IGalaxyService _galaxyService;
+        private readonly IFleetService _fleetService;
         private readonly UIManager _uiManager;
         private readonly MainMenuScreen _mainMenuScreen;
         private readonly HUDScreen _hudScreen;
+        private readonly GalaxyMapScreen _galaxyMapScreen;
         private readonly IResourceRepository _resourceRepository;
         private readonly GameConfigSO _config;
 
@@ -33,9 +35,11 @@ namespace GalacticEmpire.Presentation
             IStationRepository stationRepository,
             IResourceService resourceService,
             IGalaxyService galaxyService,
+            IFleetService fleetService,
             UIManager uiManager,
             MainMenuScreen mainMenuScreen,
             HUDScreen hudScreen,
+            GalaxyMapScreen galaxyMapScreen,
             IResourceRepository resourceRepository,
             GameConfigSO config)
         {
@@ -43,9 +47,11 @@ namespace GalacticEmpire.Presentation
             _stationRepository = stationRepository;
             _resourceService = resourceService;
             _galaxyService = galaxyService;
+            _fleetService = fleetService;
             _uiManager = uiManager;
             _mainMenuScreen = mainMenuScreen;
             _hudScreen = hudScreen;
+            _galaxyMapScreen = galaxyMapScreen;
             _resourceRepository = resourceRepository;
             _config = config;
         }
@@ -144,15 +150,20 @@ namespace GalacticEmpire.Presentation
             // Register all screens
             _uiManager.Register(_mainMenuScreen);
             _uiManager.Register(_hudScreen);
+            _uiManager.Register(_galaxyMapScreen);
 
             // Initialize HUD with resource repository
             _hudScreen.Initialize(_resourceRepository);
+            _galaxyMapScreen.Initialize(_fleetService);
 
             // Show Main Menu first
             await _uiManager.ShowAsync<MainMenuScreen>();
 
             // When Play is pressed - switch to HUD
             _mainMenuScreen.OnPlayPressed += HandlePlayPressed;
+
+            // Galaxy map is an overlay above HUD, not a full screen swap
+            _hudScreen.OnGalaxyPressed += HandleGalaxyPressed;
 
             GELogger.Info(LogCategory.UI, "UI initialized. Main Menu shown.");
         }
@@ -169,6 +180,15 @@ namespace GalacticEmpire.Presentation
             await _uiManager.ShowAsync<HUDScreen>();
 
             GELogger.Info(LogCategory.UI, "Switched to game HUD.");
+        }
+
+        private void HandleGalaxyPressed()
+        {
+            // Toggle: hide if already open, show otherwise - HUD stays visible either way
+            if (_galaxyMapScreen.IsVisible)
+                _galaxyMapScreen.HideAsync().Forget();
+            else
+                _galaxyMapScreen.ShowAsync().Forget();
         }
     }
 }

@@ -39,7 +39,11 @@ namespace GalacticEmpire.Feature.UI.Core
             CancelCurrentAnimation();
             _cts = new CancellationTokenSource();
 
-            // Ensure CanvasGroup exists before animating
+            // Ensure CanvasGroup exists before animating - check the object itself,
+            // not just the cached field, in case Awake() hasn't run yet
+            if (_canvasGroup == null)
+                _canvasGroup = GetComponent<CanvasGroup>();
+
             if (_canvasGroup == null)
                 _canvasGroup = gameObject.AddComponent<CanvasGroup>();
 

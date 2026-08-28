@@ -18,6 +18,10 @@ using VContainer.Unity;
 namespace GalacticEmpire.Presentation
 {
     /// <summary>Wires up all dependencies for the game.</summary>
+    // Runs after all default-order MonoBehaviours (including every ScreenBase)
+    // so their Awake() - which sets up CanvasGroup - has already completed
+    // by the time this builds the container and calls ShowAsync().
+    [DefaultExecutionOrder(1000)]
     public sealed class GameBootstrapper : LifetimeScope
     {
         [SerializeField] private FleetRepositorySO _fleetRepository;
@@ -29,6 +33,7 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private UIManager _uiManager;
         [SerializeField] private MainMenuScreen _mainMenuScreen;
         [SerializeField] private HUDScreen _hudScreen;
+        [SerializeField] private GalaxyMapScreen _galaxyMapScreen;
         [SerializeField] private GameConfigSO _config;
 
         protected override void Configure(IContainerBuilder builder)
@@ -54,6 +59,7 @@ namespace GalacticEmpire.Presentation
             builder.RegisterComponent(_uiManager);
             builder.RegisterComponent(_mainMenuScreen);
             builder.RegisterComponent(_hudScreen);
+            builder.RegisterComponent(_galaxyMapScreen);
             builder.RegisterComponent(_galaxyMapPresenter);
 
             builder.RegisterEntryPoint<GameEntryPoint>();

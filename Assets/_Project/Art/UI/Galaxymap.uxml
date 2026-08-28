@@ -1,0 +1,41 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="root" picking-mode="Ignore" style="flex: 1; background-color: rgba(0,0,0,0);">
+
+        <!-- Sector info panel - hidden until a sector is clicked -->
+        <ui:VisualElement name="sector-panel" picking-mode="Position"
+            style="position: absolute; top: 80px; right: 20px; width: 260px;
+                   background-color: rgba(10,20,40,0.9); padding: 16px;
+                   border-color: rgba(100,180,255,0.4); border-width: 1px; border-radius: 4px;
+                   display: none;">
+
+            <ui:Label name="sector-name" text="Sector Name"
+                style="font-size: 18px; color: rgba(200,220,255,1); -unity-font-style: bold; margin-bottom: 4px;"/>
+
+            <ui:Label name="sector-type" text="Type: Safe"
+                style="font-size: 12px; color: rgba(180,180,200,1); margin-bottom: 8px;"/>
+
+            <ui:VisualElement name="sector-stats" style="margin-bottom: 12px;">
+                <ui:Label name="sector-richness" text="Resource Richness: 0%"
+                    style="font-size: 12px; color: rgba(120,200,255,1); margin-bottom: 2px;"/>
+                <ui:Label name="sector-threat" text="Threat Level: 0%"
+                    style="font-size: 12px; color: rgba(255,150,120,1);"/>
+            </ui:VisualElement>
+
+            <ui:Label name="sector-status" text="Unowned"
+                style="font-size: 12px; color: rgba(180,180,200,1); margin-bottom: 12px;"/>
+
+            <ui:DropdownField name="fleet-dropdown" label="Fleet"
+                style="margin-bottom: 12px; font-size: 12px;"/>
+
+            <ui:Button name="dispatch-button" text="DISPATCH FLEET"
+                style="height: 36px; font-size: 12px; -unity-font-style: bold;
+                       background-color: rgba(20,60,120,0.8); color: rgba(180,220,255,1);
+                       border-color: rgba(100,180,255,0.4); border-width: 1px; border-radius: 3px;"/>
+
+            <ui:Label name="dispatch-feedback" text=""
+                style="font-size: 11px; color: rgba(255,180,100,1); margin-top: 8px; white-space: normal;"/>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
