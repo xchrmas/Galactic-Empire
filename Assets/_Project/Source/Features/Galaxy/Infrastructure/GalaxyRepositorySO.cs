@@ -10,8 +10,8 @@ using UnityEngine;
 namespace GalacticEmpire.Feature.Galaxy.Infrastructure
 {
     /// <summary>Stores the galaxy map as a Unity asset.</summary>
-    [CreateAssetMenu(fileName = "GalaxyRepository",
-        menuName = "GalacticEmpire/Galaxy/Galaxy Repository")]
+    [CreateAssetMenu(fileName = "GalaxyRepository", menuName = "GalacticEmpire/Galaxy/Galaxy Repository")]
+
     public sealed class GalaxyRepositorySO : SerializedScriptableObject, IGalaxyRepository
     {
         [TitleGroup("Galaxy State")]
@@ -48,12 +48,18 @@ namespace GalacticEmpire.Feature.Galaxy.Infrastructure
         /// <summary>True if a galaxy has been generated already.</summary>
         public bool HasGalaxy() => _galaxy != null;
 
+        /// <summary>Removes the saved galaxy - resets state at game start.</summary>
+        public void Clear()
+        {
+            _galaxy = null;
+        }
+
         [TitleGroup("Debug")]
         [Button("Reset Galaxy", ButtonSizes.Medium), GUIColor(1f, 0.4f, 0.4f)]
         [ShowIf("HasGalaxy")]
         private void ResetGalaxy()
         {
-            _galaxy = null;
+            Clear();
             GELogger.Warning(LogCategory.System, "Galaxy reset.");
         }
     }

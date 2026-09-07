@@ -37,6 +37,17 @@ namespace GalacticEmpire.Feature.Fleet.Application
         public IReadOnlyList<FleetEntity> GetAll() => _fleets.AsReadOnly();
 
         /// <summary>Finds a fleet by ID.</summary>
+        /// <summary>Registers a fleet from ships that already exist - no resource cost. Used for the starting fleet at boot.</summary>
+        public FleetEntity RegisterStartingFleet(string name, IReadOnlyList<ShipEntity> ships)
+        {
+            var fleet = FleetEntity.Create(name, ships);
+            _fleets.Add(fleet);
+
+            GELogger.Info(LogCategory.Fleet, $"Fleet '{fleet.Name}' registered with {fleet.ShipCount} ship(s).");
+
+            return fleet;
+        }
+
         public FleetEntity GetById(Guid fleetId)
         {
             return _fleets.FirstOrDefault(f => f.Id == fleetId);

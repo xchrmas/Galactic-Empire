@@ -68,16 +68,10 @@ namespace GalacticEmpire.Feature.UI.Screens
             if (_galaxyButton != null)
                 _galaxyButton.clicked += HandleGalaxyPressed;
 
-            Debug.Log($"[HUDScreen] Init complete. galaxyButton null: {_galaxyButton == null}, panel: {root.panel}, picking mode root: {root.pickingMode}");
-
             _uiInitialized = true;
         }
 
-        private void HandleGalaxyPressed()
-        {
-            Debug.Log("[HUDScreen] HandleGalaxyPressed invoked!");
-            OnGalaxyPressed?.Invoke();
-        }
+        private void HandleGalaxyPressed() => OnGalaxyPressed?.Invoke();
 
         /// <summary>Call this every production tick to update resource display.</summary>
         public void RefreshResources()

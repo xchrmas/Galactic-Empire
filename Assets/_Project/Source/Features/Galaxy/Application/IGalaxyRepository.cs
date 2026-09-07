@@ -16,5 +16,9 @@ namespace GalacticEmpire.Feature.Galaxy.Application
 
         // True if a galaxy has been generated already
         bool HasGalaxy();
+
+        // Removes the saved galaxy - used to reset state at game start so
+        // Editor Play sessions always regenerate a fresh galaxy
+        void Clear();
     }
 }

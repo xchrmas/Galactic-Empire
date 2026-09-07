@@ -1,6 +1,7 @@
 // Main game loop - no MonoBehaviour, VContainer manages the lifecycle.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using GalacticEmpire.Core;
@@ -9,6 +10,7 @@ using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Station.Application;
 using GalacticEmpire.Feature.UI.Core;
 using GalacticEmpire.Feature.UI.Screens;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace GalacticEmpire.Presentation
@@ -60,6 +62,13 @@ namespace GalacticEmpire.Presentation
         {
             GELogger.Info(LogCategory.System, "Galactic Empire initializing...");
 
+            // Repositories are ScriptableObject assets - Unity keeps their data
+            // between Play sessions in the Editor. Clearing here guarantees every
+            // run starts from the same clean state instead of accumulating leftovers.
+            _stationRepository.Clear();
+            _fleetRepository.Clear();
+            _galaxyService.ClearGalaxy();
+
             InitializeStation();
             InitializeFleet();
             InitializeGalaxy();
@@ -95,6 +104,10 @@ namespace GalacticEmpire.Presentation
         {
             var ship = ShipEntity.Create("Destroyer I", _config.MaxFleetSize, 25f, _config.DefaultShipSpeed);
             _fleetRepository.Add(ship);
+
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            _fleetService.RegisterStartingFleet("Home Fleet", ships);
+
             GELogger.Info(LogCategory.Fleet, $"Fleet ready. Ships: {_fleetRepository.GetAll().Count}");
         }
 

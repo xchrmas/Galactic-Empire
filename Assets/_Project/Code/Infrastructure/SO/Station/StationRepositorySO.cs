@@ -9,6 +9,7 @@ namespace GalacticEmpire.Infrastructure
 {
     /// <summary>Stores and manages the player's station as a ScriptableObject asset.</summary>
     [CreateAssetMenu(fileName = "StationRepository", menuName = "GalacticEmpire/Station/Station Repository")]
+
     public sealed class StationRepositorySO : SerializedScriptableObject, IStationRepository
     {
         [TitleGroup("Station State")]
@@ -44,12 +45,18 @@ namespace GalacticEmpire.Infrastructure
             GELogger.Info(LogCategory.Station, $"Default station created: {_station.Name}");
         }
 
+        /// <summary>Removes the saved station - resets state at game start.</summary>
+        public void Clear()
+        {
+            _station = null;
+        }
+
         [TitleGroup("Debug")]
         [Button("Reset Station", ButtonSizes.Medium), GUIColor(1f, 0.4f, 0.4f)]
         [ShowIf("HasStation")]
         private void ResetStation()
         {
-            _station = null;
+            Clear();
             GELogger.Warning(LogCategory.Station, "Station reset.");
         }
     }

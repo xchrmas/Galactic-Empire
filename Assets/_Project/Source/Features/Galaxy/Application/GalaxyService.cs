@@ -89,6 +89,12 @@ namespace GalacticEmpire.Feature.Galaxy.Application
             return galaxy.GetNeighbours(sectorId);
         }
 
+        /// <summary>Removes the saved galaxy - resets state at game start.</summary>
+        public void ClearGalaxy()
+        {
+            _galaxyRepository.Clear();
+        }
+
         private GalaxyMapEntity GetGalaxyOrThrow()
         {
             var galaxy = _galaxyRepository.Get();

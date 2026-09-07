@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using GalacticEmpire.Feature.Fleet.Domain;
+using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Fleet.Domain;
 
 namespace GalacticEmpire.Feature.Fleet.Application
@@ -20,19 +20,23 @@ namespace GalacticEmpire.Feature.Fleet.Application
         // Returns all active fleets
         IReadOnlyList<FleetEntity> GetAll();
 
-        // Returns  single fleet by ID, null if not found
+        // Returns a single fleet by ID, null if not found
         FleetEntity GetById(Guid fleetId);
 
-        // Creates new fleet and returns it
+        // Creates a new fleet and returns it
         FleetEntity CreateFleet(CreateFleetCommand cmd);
 
-        // Dispatches fleet - changes status to Moving
+        // Registers a fleet built from ships that already exist (e.g. the
+        // starting fleet at game boot) - skips the resource cost in CreateFleet
+        FleetEntity RegisterStartingFleet(string name, IReadOnlyList<ShipEntity> ships);
+
+        // Dispatches a fleet - changes status to Moving
         FleetEntity Dispatch(DispatchFleetCommand cmd);
 
-        // Recalls fleet back to station
+        // Recalls a fleet back to station
         FleetEntity Recall(RecallFleetCommand cmd);
 
-        // Queues ship for construction
+        // Queues a ship for construction
         void BuildShip(BuildShipCommand cmd);
     }
 }

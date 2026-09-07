@@ -13,5 +13,9 @@ namespace GalacticEmpire.Core
 
         // Returns true if a station has been created
         bool HasStation();
+
+        // Removes the saved station - used to reset state at game start so
+        // Editor Play sessions always start with a fresh station
+        void Clear();
     }
 }

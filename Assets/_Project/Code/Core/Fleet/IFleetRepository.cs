@@ -22,5 +22,9 @@ namespace GalacticEmpire.Core
 
         // Removes a ship from the fleet permanently
         void Remove(Guid id);
+
+        // Removes all ships - used to reset state at game start so Editor
+        // Play sessions don't accumulate leftover ships from prior runs
+        void Clear();
     }
 }

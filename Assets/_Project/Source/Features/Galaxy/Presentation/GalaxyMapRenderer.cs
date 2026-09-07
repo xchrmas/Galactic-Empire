@@ -14,7 +14,7 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
     {
         [Header("Sector Visuals")]
         [SerializeField] private GameObject _sectorPrefab;
-        [SerializeField] private float _sectorScale = 0.3f;
+        [SerializeField] private float _sectorScale = 3f;
 
         [Header("Connection Lines")]
         [SerializeField] private Material _connectionMaterial;
@@ -24,10 +24,12 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
         [SerializeField] private Color _safeColor = new Color(0.2f, 0.8f, 0.2f);
         [SerializeField] private Color _contestedColor = new Color(0.8f, 0.8f, 0.2f);
         [SerializeField] private Color _hostileColor = new Color(0.8f, 0.2f, 0.2f);
+
         [SerializeField] private Color _unknownColor = new Color(0.4f, 0.4f, 0.4f);
         [SerializeField] private Color _nebulaColor = new Color(0.4f, 0.2f, 0.8f);
         [SerializeField] private Color _blackHoleColor = new Color(0.1f, 0.1f, 0.1f);
         [SerializeField] private Color _ownedColor = new Color(0.2f, 0.6f, 1.0f);
+
 
         private IGalaxyService _galaxyService;
         private readonly List<GameObject> _sectorObjects = new();
@@ -57,6 +59,35 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
 
             foreach (var sector in galaxy.Sectors)
                 DrawConnections(sector, galaxy);
+        }
+
+        /// <summary>Center and radius (in local space) of all currently active sectors - used to frame the map camera automatically.</summary>
+        public bool TryGetActiveSectorsBounds(out Vector3 center, out float radius)
+        {
+            center = Vector3.zero;
+            radius = 0f;
+
+            var activePositions = new List<Vector3>();
+            foreach (var go in _sectorObjects)
+            {
+                if (go != null && go.activeSelf)
+                    activePositions.Add(go.transform.localPosition);
+            }
+
+            if (activePositions.Count == 0)
+                return false;
+
+            foreach (var pos in activePositions)
+                center += pos;
+            center /= activePositions.Count;
+
+            foreach (var pos in activePositions)
+                radius = Mathf.Max(radius, Vector3.Distance(pos, center));
+
+            // Never zero - a single sector still needs room to be visible
+            radius = Mathf.Max(radius, 2f);
+
+            return true;
         }
 
         private void SpawnSector(SectorEntity sector)
@@ -206,9 +237,7 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
             }
 
             foreach (var line in _connectionLines)
-            {
                 if (line != null) Destroy(line.gameObject);
-            }
 
             _sectorObjects.Clear();
             _connectionLines.Clear();

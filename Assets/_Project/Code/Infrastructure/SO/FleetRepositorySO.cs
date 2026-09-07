@@ -10,6 +10,8 @@ namespace GalacticEmpire.Infrastructure
 {
     /// <summary>Stores and manages the fleet as a ScriptableObject asset.</summary>
     [CreateAssetMenu(fileName = "FleetRepository", menuName = "GalacticEmpire/Fleet Repository")]
+
+
     public sealed class FleetRepositorySO : ScriptableObject, IFleetRepository
     {
         // Unity serializes this list — data persists between play sessions in the Editor
@@ -62,6 +64,11 @@ namespace GalacticEmpire.Infrastructure
             {
                 throw new InvalidOperationException($"Ship {id} not found in fleet.");
             }
+        }
+        /// <summary>Removes all ships - resets state at game start.</summary>
+        public void Clear()
+        {
+            _ships.Clear();
         }
     }
 }

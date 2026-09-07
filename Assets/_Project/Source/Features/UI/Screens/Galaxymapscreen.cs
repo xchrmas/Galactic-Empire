@@ -33,6 +33,11 @@ namespace GalacticEmpire.Feature.UI.Screens
         private SectorEntity _selectedSector;
         private FleetEntity[] _idleFleets = Array.Empty<FleetEntity>();
 
+        // Raised after the screen finishes its show/hide fade - GalaxyMapPresenter
+        // uses these to move the camera to/from the galaxy map view
+        public event Action OnShown;
+        public event Action OnHidden;
+
         public void Initialize(IFleetService fleetService)
         {
             _fleetService = fleetService;
@@ -41,6 +46,12 @@ namespace GalacticEmpire.Feature.UI.Screens
         protected override void OnShow()
         {
             InitializeUIIfNeeded();
+            OnShown?.Invoke();
+        }
+
+        protected override void OnHide()
+        {
+            OnHidden?.Invoke();
         }
 
         private void InitializeUIIfNeeded()

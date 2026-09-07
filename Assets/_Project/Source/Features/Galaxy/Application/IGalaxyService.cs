@@ -27,5 +27,8 @@ namespace GalacticEmpire.Feature.Galaxy.Application
 
         // Returns all sectors reachable from a given sector
         IReadOnlyList<SectorEntity> GetReachableSectors(Guid sectorId);
+
+        // Removes the saved galaxy - used to reset state at game start
+        void ClearGalaxy();
     }
 }
