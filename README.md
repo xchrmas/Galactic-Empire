@@ -34,9 +34,9 @@ Procedurally generated universe • Real-time tactical battles • Alliance warf
 ```
 
 This project is simultaneously:
-- 🎮 A **complete, shippable game** with deep mechanics and modern visuals
-- 🏆 A **portfolio** demonstrating mastery across 12 technology domains
-- 📚 A **reference architecture** for production-grade Unity development
+- 🎮 **complete, shippable game** with deep mechanics and modern visuals
+- 🏆 **portfolio** demonstrating mastery across 12 technology domains
+- 📚 **reference architecture** for production-grade Unity development
 
 <div align="center">
 
