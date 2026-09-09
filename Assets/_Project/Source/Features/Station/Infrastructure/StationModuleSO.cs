@@ -1,10 +1,12 @@
 // ScriptableObject config for a station module.
 // Defines stats, costs and visual data for each module type.
+
 using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Station.Domain;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GalacticEmpire.Infrastructure
+namespace GalacticEmpire.Feature.Station.Infrastructure
 {
     /// <summary>ScriptableObject configuration asset for a station module type.</summary>
     [CreateAssetMenu(fileName = "New Module", menuName = "GalacticEmpire/Station/Module Config")]

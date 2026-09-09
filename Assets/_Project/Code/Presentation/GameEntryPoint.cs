@@ -12,6 +12,7 @@ using GalacticEmpire.Feature.UI.Core;
 using GalacticEmpire.Feature.UI.Screens;
 using UnityEngine;
 using VContainer.Unity;
+using GalacticEmpire.Feature.Station.Domain;
 
 namespace GalacticEmpire.Presentation
 {

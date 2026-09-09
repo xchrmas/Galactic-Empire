@@ -2,6 +2,8 @@
 
 using System;
 using NUnit.Framework;
+using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Station.Domain;
 
 namespace GalacticEmpire.Core.Tests
 {

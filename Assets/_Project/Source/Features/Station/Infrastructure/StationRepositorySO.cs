@@ -1,11 +1,13 @@
 // Layer: Infrastructure | ScriptableObject implementation of IStationRepository.
 // Stores the player's station state as a Unity asset.
 
+using GalacticEmpire.Feature.Station.Application;
+using GalacticEmpire.Feature.Station.Domain;
 using GalacticEmpire.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GalacticEmpire.Infrastructure
+namespace GalacticEmpire.Feature.Station.Infrastructure
 {
     /// <summary>Stores and manages the player's station as a ScriptableObject asset.</summary>
     [CreateAssetMenu(fileName = "StationRepository", menuName = "GalacticEmpire/Station/Station Repository")]

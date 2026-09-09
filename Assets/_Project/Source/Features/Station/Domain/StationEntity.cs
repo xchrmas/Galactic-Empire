@@ -3,8 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticEmpire.Core;
 
-namespace GalacticEmpire.Core
+namespace GalacticEmpire.Feature.Station.Domain
 {
     /// <summary>Immutable domain entity representing the player's space station </summary>
     public sealed record StationEntity
@@ -100,7 +101,7 @@ namespace GalacticEmpire.Core
 
             return this with
             {
-                Grid    = updatedGrid.AsReadOnly(),
+                Grid  = updatedGrid.AsReadOnly(),
                 Modules = updatedModules.AsReadOnly()
             };
         }

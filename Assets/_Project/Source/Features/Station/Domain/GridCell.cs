@@ -2,7 +2,7 @@
 
 using System;
 
-namespace GalacticEmpire.Core
+namespace GalacticEmpire.Feature.Station.Domain
 {
     /// <summary>Immutable grid cell — holds position and optional module </summary>
     public sealed record GridCell

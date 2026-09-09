@@ -1,6 +1,6 @@
 // Defines station module categories and types.
 
-namespace GalacticEmpire.Core
+namespace GalacticEmpire.Feature.Station.Domain
 {
     /// <summary>High-level category of a station module.</summary>
     public enum StationModuleCategory

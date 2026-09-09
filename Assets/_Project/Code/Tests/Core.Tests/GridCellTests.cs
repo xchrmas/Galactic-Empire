@@ -1,6 +1,9 @@
 // Core.Tests  Unit tests for GridCell domain logic.
 
 using System;
+
+using GalacticEmpire.Feature.Station.Domain;
+
 using NUnit.Framework;
 
 namespace GalacticEmpire.Core.Tests

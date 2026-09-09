@@ -1,8 +1,9 @@
 // Immutable domain entity representing a single station module.
 
 using System;
+using GalacticEmpire.Core;
 
-namespace GalacticEmpire.Core
+namespace GalacticEmpire.Feature.Station.Domain
 {
     /// <summary>Immutable domain entity representing a station module </summary>
     public sealed record StationModuleEntity

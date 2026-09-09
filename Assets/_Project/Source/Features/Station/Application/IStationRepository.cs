@@ -1,6 +1,8 @@
 // Contract for station data access
 
-namespace GalacticEmpire.Core
+using GalacticEmpire.Feature.Station.Domain;
+
+namespace GalacticEmpire.Feature.Station.Application
 {
     /// <summary>Defines station data access operations </summary>
     public interface IStationRepository

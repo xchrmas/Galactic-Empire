@@ -1,18 +1,15 @@
 {
-    "name": "GalacticEmpire.Feature.Station.Application",
+    "name": "GalacticEmpire.Feature.Station.Domain",
     "rootNamespace": "",
     "references": [
-        "GUID:0d4fbb360851f1f4088f149203d45455",
-        "GUID:540139f15a26b0a4e81713b177899692",
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:d8dd31b5cfbb6904087aa18ac8c1642e"
+        "GUID:0d4fbb360851f1f4088f149203d45455"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
