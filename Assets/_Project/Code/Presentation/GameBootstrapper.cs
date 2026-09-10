@@ -49,6 +49,7 @@ namespace GalacticEmpire.Presentation
 
             // Services
             builder.Register<IResourceService, ResourceProductionService>(Lifetime.Singleton);
+            builder.Register<IStationService, StationService>(Lifetime.Singleton);
             builder.Register<IFleetService, FleetService>(Lifetime.Singleton);
             builder.Register<GalaxyGeneratorService>(Lifetime.Singleton);
             builder.Register<IGalaxyService, GalaxyService>(Lifetime.Singleton);
