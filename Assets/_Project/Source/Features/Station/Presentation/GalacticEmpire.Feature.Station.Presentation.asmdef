@@ -1,0 +1,23 @@
+{
+    "name": "GalacticEmpire.Feature.Station.Presentation",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0d4fbb360851f1f4088f149203d45455",
+        "GUID:d8dd31b5cfbb6904087aa18ac8c1642e",
+        "GUID:65107589ecab0c943a6d0c6d46abfe0b",
+        "GUID:c94753dbd45ddfc4196cd75512b5c1e8",
+        "GUID:25d176f333c9857438fec638726a23b1",
+        "GUID:ee31a95585701ff4f9ce7192cca3de8d",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

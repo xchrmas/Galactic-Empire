@@ -1,31 +1,42 @@
 {
-    "name": "GalacticEmpire.Presentation",
-    "rootNamespace": "",
-    "references": [
-        "GUID:0d4fbb360851f1f4088f149203d45455",
-        "GUID:07ef2a281eee6e14985ce21cccf14867",
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:65107589ecab0c943a6d0c6d46abfe0b",
-        "GUID:c94753dbd45ddfc4196cd75512b5c1e8",
-        "GUID:76bbcd9f009bbd24892f9ecac0fcee87",
-        "GUID:305ed8fd43207f24a9341355133ae3be",
-        "GUID:0b8ecafd518a03b41b3e26697fb844c7",
-        "GUID:e53c5ecc56c02c845abf7d9e9402a4a8",
-        "GUID:a46bd12dcafabd84bbe0fecd6e16086c",
-        "GUID:051eaae5bd9e501479de8ad31d90918f",
-        "GUID:25d176f333c9857438fec638726a23b1",
-        "GUID:ee31a95585701ff4f9ce7192cca3de8d",
-        "GUID:758c3ae419697b545a5fe26b00e7a0aa",
-        "GUID:d8dd31b5cfbb6904087aa18ac8c1642e"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": true,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+    "name":  "GalacticEmpire.Presentation",
+    "rootNamespace":  "",
+    "references":  [
+                       "GUID:0d4fbb360851f1f4088f149203d45455",
+                       "GUID:07ef2a281eee6e14985ce21cccf14867",
+                       "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+                       "GUID:f51ebe6a0ceec4240a699833d6309b23",
+                       "GUID:65107589ecab0c943a6d0c6d46abfe0b",
+                       "GUID:c94753dbd45ddfc4196cd75512b5c1e8",
+                       "GUID:76bbcd9f009bbd24892f9ecac0fcee87",
+                       "GUID:305ed8fd43207f24a9341355133ae3be",
+                       "GUID:0b8ecafd518a03b41b3e26697fb844c7",
+                       "GUID:e53c5ecc56c02c845abf7d9e9402a4a8",
+                       "GUID:a46bd12dcafabd84bbe0fecd6e16086c",
+                       "GUID:051eaae5bd9e501479de8ad31d90918f",
+                       "GUID:25d176f333c9857438fec638726a23b1",
+                       "GUID:ee31a95585701ff4f9ce7192cca3de8d",
+                       "GUID:758c3ae419697b545a5fe26b00e7a0aa",
+                       "GUID:d8dd31b5cfbb6904087aa18ac8c1642e",
+                       "GUID:975c75d0c40566044a8afe1aa3a2d5b5"
+                   ],
+    "includePlatforms":  [
+
+                         ],
+    "excludePlatforms":  [
+
+                         ],
+    "allowUnsafeCode":  true,
+    "overrideReferences":  false,
+    "precompiledReferences":  [
+
+                              ],
+    "autoReferenced":  true,
+    "defineConstraints":  [
+
+                          ],
+    "versionDefines":  [
+
+                       ],
+    "noEngineReferences":  false
 }

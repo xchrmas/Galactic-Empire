@@ -19,11 +19,13 @@ namespace GalacticEmpire.Feature.UI.Screens
         private Label _crystalsLabel;
         private Label _darkMatterLabel;
         private Button _galaxyButton;
+        private Button _stationButton;
 
         private IResourceRepository _resourceRepository;
         private bool _uiInitialized;
 
         public event System.Action OnGalaxyPressed;
+        public event System.Action OnStationPressed;
 
         public void Initialize(IResourceRepository resourceRepository)
         {
@@ -58,20 +60,26 @@ namespace GalacticEmpire.Feature.UI.Screens
             _crystalsLabel = root.Q<Label>("crystals-value");
             _darkMatterLabel = root.Q<Label>("dark-matter-value");
             _galaxyButton = root.Q<Button>("galaxy-button");
+            _stationButton = root.Q<Button>("station-button");
 
             if (_metalLabel == null) Debug.LogWarning("[HUDScreen] Label 'metal-value' not found in UXML.");
             if (_energyLabel == null) Debug.LogWarning("[HUDScreen] Label 'energy-value' not found in UXML.");
             if (_crystalsLabel == null) Debug.LogWarning("[HUDScreen] Label 'crystals-value' not found in UXML.");
             if (_darkMatterLabel == null) Debug.LogWarning("[HUDScreen] Label 'dark-matter-value' not found in UXML.");
             if (_galaxyButton == null) Debug.LogWarning("[HUDScreen] Button 'galaxy-button' not found in UXML.");
+            if (_stationButton == null) Debug.LogWarning("[HUDScreen] Button 'station-button' not found in UXML.");
 
             if (_galaxyButton != null)
                 _galaxyButton.clicked += HandleGalaxyPressed;
+
+            if (_stationButton != null)
+                _stationButton.clicked += HandleStationPressed;
 
             _uiInitialized = true;
         }
 
         private void HandleGalaxyPressed() => OnGalaxyPressed?.Invoke();
+        private void HandleStationPressed() => OnStationPressed?.Invoke();
 
         /// <summary>Call this every production tick to update resource display.</summary>
         public void RefreshResources()
@@ -99,6 +107,9 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             if (_galaxyButton != null)
                 _galaxyButton.clicked -= HandleGalaxyPressed;
+
+            if (_stationButton != null)
+                _stationButton.clicked -= HandleStationPressed;
         }
     }
 }

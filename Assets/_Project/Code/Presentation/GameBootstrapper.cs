@@ -8,6 +8,7 @@ using GalacticEmpire.Feature.Galaxy.Infrastructure;
 using GalacticEmpire.Feature.Galaxy.Presentation;
 using GalacticEmpire.Feature.Station.Application;
 using GalacticEmpire.Feature.Station.Infrastructure;
+using GalacticEmpire.Feature.Station.Presentation;
 using GalacticEmpire.Feature.UI.Core;
 using GalacticEmpire.Feature.UI.Screens;
 using GalacticEmpire.Infrastructure;
@@ -29,11 +30,13 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private ResourceRepositorySO _resourceRepository;
         [SerializeField] private GalaxyRepositorySO _galaxyRepository;
         [SerializeField] private GalaxyMapPresenter _galaxyMapPresenter;
+        [SerializeField] private StationBuilderPresenter _stationBuilderPresenter;
 
         [SerializeField] private UIManager _uiManager;
         [SerializeField] private MainMenuScreen _mainMenuScreen;
         [SerializeField] private HUDScreen _hudScreen;
         [SerializeField] private GalaxyMapScreen _galaxyMapScreen;
+        [SerializeField] private StationBuilderScreen _stationBuilderScreen;
         [SerializeField] private GameConfigSO _config;
 
         protected override void Configure(IContainerBuilder builder)
@@ -62,6 +65,8 @@ namespace GalacticEmpire.Presentation
             builder.RegisterComponent(_hudScreen);
             builder.RegisterComponent(_galaxyMapScreen);
             builder.RegisterComponent(_galaxyMapPresenter);
+            builder.RegisterComponent(_stationBuilderScreen);
+            builder.RegisterComponent(_stationBuilderPresenter);
 
             builder.RegisterEntryPoint<GameEntryPoint>();
         }

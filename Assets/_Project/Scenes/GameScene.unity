@@ -1141,6 +1141,139 @@ MonoBehaviour:
   radius: 3500
   flattening: 0.999
   model: {fileID: 1242438949}
+--- !u!1 &916642491
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 916642495}
+  - component: {fileID: 916642493}
+  - component: {fileID: 916642494}
+  - component: {fileID: 916642492}
+  m_Layer: 5
+  m_Name: UI_StationBuilder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &916642492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916642491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b0e511e70cb4f48a77dbfb142c97ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.Station.Presentation::GalacticEmpire.Feature.UI.Screens.StationBuilderScreen
+  _fadeDuration: 0.3
+  _document: {fileID: 916642493}
+--- !u!114 &916642493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916642491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: d835b2a9475d7db43a047e5a559ae998, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: d8c8bcef1a43e074ca933f5b4adc810d, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!225 &916642494
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916642491}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!4 &916642495
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916642491}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1072114779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1072114781}
+  - component: {fileID: 1072114780}
+  m_Layer: 0
+  m_Name: StationGridRenderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1072114780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072114779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a2d5096492efd444830c04c75024392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.Station.Presentation::GalacticEmpire.Feature.Station.Presentation.StationGridRenderer
+  _cellPrefab: {fileID: 0}
+  _cellSpacing: 2
+  _emptyColor: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+  _productionColor: {r: 0.2, g: 0.8, b: 0.4, a: 1}
+  _militaryColor: {r: 0.8, g: 0.3, b: 0.2, a: 1}
+  _supportColor: {r: 0.3, g: 0.5, b: 0.9, a: 1}
+--- !u!4 &1072114781
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072114779}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1705019516}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1198562951
 GameObject:
   m_ObjectHideFlags: 0
@@ -1195,10 +1328,12 @@ MonoBehaviour:
   _resourceRepository: {fileID: 11400000, guid: 8031b067de087ab4d8fa3aa2141f7a8d, type: 2}
   _galaxyRepository: {fileID: 11400000, guid: 24d1cf295954a50439b88a407c1dffd4, type: 2}
   _galaxyMapPresenter: {fileID: 535506057}
+  _stationBuilderPresenter: {fileID: 1705019517}
   _uiManager: {fileID: 165118571}
   _mainMenuScreen: {fileID: 1342669489}
   _hudScreen: {fileID: 164155406}
   _galaxyMapScreen: {fileID: 1968616400}
+  _stationBuilderScreen: {fileID: 916642492}
   _config: {fileID: 11400000, guid: 262d8f56a8d279143ac50ff6599d6fb6, type: 2}
 --- !u!114 &1198562954
 MonoBehaviour:
@@ -1502,6 +1637,55 @@ MonoBehaviour:
   starPulseSpeedMin: 0
   starPulseSpeedMax: 1
   model: {fileID: 1938891238}
+--- !u!1 &1705019515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1705019516}
+  - component: {fileID: 1705019517}
+  m_Layer: 0
+  m_Name: StationBuilderPresenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1705019516
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705019515}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1072114781}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1705019517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705019515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13704755c61d22247a0e6f7a83e6abe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.Station.Presentation::GalacticEmpire.Feature.Station.Presentation.StationBuilderPresenter
+  _renderer: {fileID: 1072114780}
+  _stationBuilderScreen: {fileID: 916642492}
+  _availableModules: []
+  _orthographicSize: 10
 --- !u!1 &1910208649
 GameObject:
   m_ObjectHideFlags: 0
@@ -1844,4 +2028,6 @@ SceneRoots:
   - {fileID: 1342669488}
   - {fileID: 164155405}
   - {fileID: 1968616403}
+  - {fileID: 916642495}
   - {fileID: 165118572}
+  - {fileID: 1705019516}

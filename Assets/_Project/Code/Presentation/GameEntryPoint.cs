@@ -28,6 +28,7 @@ namespace GalacticEmpire.Presentation
         private readonly MainMenuScreen _mainMenuScreen;
         private readonly HUDScreen _hudScreen;
         private readonly GalaxyMapScreen _galaxyMapScreen;
+        private readonly StationBuilderScreen _stationBuilderScreen;
         private readonly IResourceRepository _resourceRepository;
         private readonly GameConfigSO _config;
 
@@ -43,6 +44,7 @@ namespace GalacticEmpire.Presentation
             MainMenuScreen mainMenuScreen,
             HUDScreen hudScreen,
             GalaxyMapScreen galaxyMapScreen,
+            StationBuilderScreen stationBuilderScreen,
             IResourceRepository resourceRepository,
             GameConfigSO config)
         {
@@ -55,6 +57,7 @@ namespace GalacticEmpire.Presentation
             _mainMenuScreen = mainMenuScreen;
             _hudScreen = hudScreen;
             _galaxyMapScreen = galaxyMapScreen;
+            _stationBuilderScreen = stationBuilderScreen;
             _resourceRepository = resourceRepository;
             _config = config;
         }
@@ -165,6 +168,7 @@ namespace GalacticEmpire.Presentation
             _uiManager.Register(_mainMenuScreen);
             _uiManager.Register(_hudScreen);
             _uiManager.Register(_galaxyMapScreen);
+            _uiManager.Register(_stationBuilderScreen);
 
             // Initialize HUD with resource repository
             _hudScreen.Initialize(_resourceRepository);
@@ -176,8 +180,9 @@ namespace GalacticEmpire.Presentation
             // When Play is pressed - switch to HUD
             _mainMenuScreen.OnPlayPressed += HandlePlayPressed;
 
-            // Galaxy map is an overlay above HUD, not a full screen swap
+            // Galaxy map and station builder are overlays above HUD, not full screen swaps
             _hudScreen.OnGalaxyPressed += HandleGalaxyPressed;
+            _hudScreen.OnStationPressed += HandleStationPressed;
 
             GELogger.Info(LogCategory.UI, "UI initialized. Main Menu shown.");
         }
@@ -203,6 +208,14 @@ namespace GalacticEmpire.Presentation
                 _galaxyMapScreen.HideAsync().Forget();
             else
                 _galaxyMapScreen.ShowAsync().Forget();
+        }
+
+        private void HandleStationPressed()
+        {
+            if (_stationBuilderScreen.IsVisible)
+                _stationBuilderScreen.HideAsync().Forget();
+            else
+                _stationBuilderScreen.ShowAsync().Forget();
         }
     }
 }
