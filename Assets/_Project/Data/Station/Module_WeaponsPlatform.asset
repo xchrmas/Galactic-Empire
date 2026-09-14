@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c9dfbdc27729ee4bba807591e63ca7b, type: 3}
-  m_Name: Module_EnergyReactor
+  m_Name: Module_WeaponsPlatform
   m_EditorClassIdentifier: GalacticEmpire.Feature.Station.Infrastructure::GalacticEmpire.Feature.Station.Infrastructure.StationModuleSO
   serializationData:
     SerializedFormat: 2
@@ -21,15 +21,15 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _moduleName: Energy Reactor
-  _description: Energy Reactor placeholder description - fill in with real flavor text
+  _moduleName: Weapons Platform
+  _description: Weapons Platform placeholder description - fill in with real flavor text
   _icon: {fileID: 0}
-  _moduleType: 1
-  _category: 0
-  _producedResource: 1
-  _productionRate: 2
-  _buildCostMetal: 80
-  _buildCostEnergy: 20
-  _buildTime: 15
+  _moduleType: 4
+  _category: 1
+  _producedResource: 0
+  _productionRate: 0
+  _buildCostMetal: 250
+  _buildCostEnergy: 100
+  _buildTime: 30
   _maxLevel: 5
-  _productionBonusPerLevel: 1
+  _productionBonusPerLevel: 0

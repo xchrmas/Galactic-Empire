@@ -1684,8 +1684,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: GalacticEmpire.Feature.Station.Presentation::GalacticEmpire.Feature.Station.Presentation.StationBuilderPresenter
   _renderer: {fileID: 1072114780}
   _stationBuilderScreen: {fileID: 916642492}
-  _availableModules: []
-  _orthographicSize: 10
+  _availableModules:
+  - {fileID: 11400000, guid: dca2ada192ee1244482cbf1916b5644a, type: 2}
+  - {fileID: 11400000, guid: da0180a3dd074a5cb23e21974889d79e, type: 2}
+  - {fileID: 11400000, guid: 35c29475b62bbec4f89435fd5ea3deeb, type: 2}
+  - {fileID: 11400000, guid: 91c54cc1877c08246805c66d16d0dd71, type: 2}
+  - {fileID: 11400000, guid: a09ede8970ca45ea9c7781abb0789ffb, type: 2}
+  - {fileID: 11400000, guid: 69c17821db674232874837ad002018de, type: 2}
+  - {fileID: 11400000, guid: ec9a607793774fd49363588aa0d34004, type: 2}
+  - {fileID: 11400000, guid: bc51755e53e748008c3242face264e18, type: 2}
+  - {fileID: 11400000, guid: 06e01b0c52734ab7847a55eb36f9a2d1, type: 2}
+  _orthographicSize: 9
 --- !u!1 &1910208649
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c9dfbdc27729ee4bba807591e63ca7b, type: 3}
   m_Name: Module_CommandCenter
-  m_EditorClassIdentifier: GalacticEmpire.Infrastructure::GalacticEmpire.Infrastructure.StationModuleSO
+  m_EditorClassIdentifier: GalacticEmpire.Feature.Station.Infrastructure::GalacticEmpire.Feature.Station.Infrastructure.StationModuleSO
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -21,15 +21,15 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _moduleName: 
-  _description: 
+  _moduleName: Command Center
+  _description: Command Center placeholder description - fill in with real flavor text
   _icon: {fileID: 0}
-  _moduleType: 0
-  _category: 0
+  _moduleType: 6
+  _category: 2
   _producedResource: 0
   _productionRate: 0
   _buildCostMetal: 0
   _buildCostEnergy: 0
-  _buildTime: 10
-  _maxLevel: 5
-  _productionBonusPerLevel: 2
+  _buildTime: 1
+  _maxLevel: 1
+  _productionBonusPerLevel: 0
