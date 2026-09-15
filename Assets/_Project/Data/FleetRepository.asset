@@ -11,4 +11,4 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4e7b978789003649aaa34aeb9ad36c0, type: 3}
   m_Name: FleetRepository
-  m_EditorClassIdentifier: GalacticEmpire.Infrastructure::GalacticEmpire.Infrastructure.FleetRepositorySO
+  m_EditorClassIdentifier: GalacticEmpire.Feature.Fleet.Infrastructure::GalacticEmpire.Feature.Fleet.Infrastructure.FleetRepositorySO

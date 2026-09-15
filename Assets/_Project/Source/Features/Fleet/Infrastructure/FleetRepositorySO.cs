@@ -4,9 +4,10 @@
 using System;
 using System.Collections.Generic;
 using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Fleet.Application;
 using UnityEngine;
 
-namespace GalacticEmpire.Infrastructure
+namespace GalacticEmpire.Feature.Fleet.Infrastructure
 {
     /// <summary>Stores and manages the fleet as a ScriptableObject asset.</summary>
     [CreateAssetMenu(fileName = "FleetRepository", menuName = "GalacticEmpire/Fleet Repository")]

@@ -2,8 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using GalacticEmpire.Core;
 
-namespace GalacticEmpire.Core
+namespace GalacticEmpire.Feature.Fleet.Application
 {
     /// <summary>Defines fleet data access operations.</summary>
     public interface IFleetRepository

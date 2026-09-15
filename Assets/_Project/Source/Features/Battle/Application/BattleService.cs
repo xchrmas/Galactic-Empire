@@ -4,6 +4,7 @@
 using System;
 using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Battle.Domain;
+using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Fleet.Domain;
 
 namespace GalacticEmpire.Feature.Battle.Application

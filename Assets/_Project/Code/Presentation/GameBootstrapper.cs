@@ -3,6 +3,7 @@
 using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Battle.Application;
 using GalacticEmpire.Feature.Fleet.Application;
+using GalacticEmpire.Feature.Fleet.Infrastructure;
 using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Galaxy.Infrastructure;
 using GalacticEmpire.Feature.Galaxy.Presentation;
@@ -11,7 +12,6 @@ using GalacticEmpire.Feature.Station.Infrastructure;
 using GalacticEmpire.Feature.Station.Presentation;
 using GalacticEmpire.Feature.UI.Core;
 using GalacticEmpire.Feature.UI.Screens;
-using GalacticEmpire.Infrastructure;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
