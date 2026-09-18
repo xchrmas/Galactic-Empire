@@ -37,6 +37,7 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private HUDScreen _hudScreen;
         [SerializeField] private GalaxyMapScreen _galaxyMapScreen;
         [SerializeField] private StationBuilderScreen _stationBuilderScreen;
+        [SerializeField] private FleetManagementScreen _fleetManagementScreen;
         [SerializeField] private GameConfigSO _config;
 
         protected override void Configure(IContainerBuilder builder)
@@ -67,6 +68,7 @@ namespace GalacticEmpire.Presentation
             builder.RegisterComponent(_galaxyMapPresenter);
             builder.RegisterComponent(_stationBuilderScreen);
             builder.RegisterComponent(_stationBuilderPresenter);
+            builder.RegisterComponent(_fleetManagementScreen);
 
             builder.RegisterEntryPoint<GameEntryPoint>();
         }

@@ -20,12 +20,14 @@ namespace GalacticEmpire.Feature.UI.Screens
         private Label _darkMatterLabel;
         private Button _galaxyButton;
         private Button _stationButton;
+        private Button _fleetButton;
 
         private IResourceRepository _resourceRepository;
         private bool _uiInitialized;
 
         public event System.Action OnGalaxyPressed;
         public event System.Action OnStationPressed;
+        public event System.Action OnFleetPressed;
 
         public void Initialize(IResourceRepository resourceRepository)
         {
@@ -61,6 +63,7 @@ namespace GalacticEmpire.Feature.UI.Screens
             _darkMatterLabel = root.Q<Label>("dark-matter-value");
             _galaxyButton = root.Q<Button>("galaxy-button");
             _stationButton = root.Q<Button>("station-button");
+            _fleetButton = root.Q<Button>("fleet-button");
 
             if (_metalLabel == null) Debug.LogWarning("[HUDScreen] Label 'metal-value' not found in UXML.");
             if (_energyLabel == null) Debug.LogWarning("[HUDScreen] Label 'energy-value' not found in UXML.");
@@ -68,6 +71,7 @@ namespace GalacticEmpire.Feature.UI.Screens
             if (_darkMatterLabel == null) Debug.LogWarning("[HUDScreen] Label 'dark-matter-value' not found in UXML.");
             if (_galaxyButton == null) Debug.LogWarning("[HUDScreen] Button 'galaxy-button' not found in UXML.");
             if (_stationButton == null) Debug.LogWarning("[HUDScreen] Button 'station-button' not found in UXML.");
+            if (_fleetButton == null) Debug.LogWarning("[HUDScreen] Button 'fleet-button' not found in UXML.");
 
             if (_galaxyButton != null)
                 _galaxyButton.clicked += HandleGalaxyPressed;
@@ -75,11 +79,15 @@ namespace GalacticEmpire.Feature.UI.Screens
             if (_stationButton != null)
                 _stationButton.clicked += HandleStationPressed;
 
+            if (_fleetButton != null)
+                _fleetButton.clicked += HandleFleetPressed;
+
             _uiInitialized = true;
         }
 
         private void HandleGalaxyPressed() => OnGalaxyPressed?.Invoke();
         private void HandleStationPressed() => OnStationPressed?.Invoke();
+        private void HandleFleetPressed() => OnFleetPressed?.Invoke();
 
         /// <summary>Call this every production tick to update resource display.</summary>
         public void RefreshResources()
@@ -110,6 +118,9 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             if (_stationButton != null)
                 _stationButton.clicked -= HandleStationPressed;
+
+            if (_fleetButton != null)
+                _fleetButton.clicked -= HandleFleetPressed;
         }
     }
 }

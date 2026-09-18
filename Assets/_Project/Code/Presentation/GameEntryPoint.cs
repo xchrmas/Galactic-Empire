@@ -29,6 +29,7 @@ namespace GalacticEmpire.Presentation
         private readonly HUDScreen _hudScreen;
         private readonly GalaxyMapScreen _galaxyMapScreen;
         private readonly StationBuilderScreen _stationBuilderScreen;
+        private readonly FleetManagementScreen _fleetManagementScreen;
         private readonly IResourceRepository _resourceRepository;
         private readonly GameConfigSO _config;
 
@@ -45,6 +46,7 @@ namespace GalacticEmpire.Presentation
             HUDScreen hudScreen,
             GalaxyMapScreen galaxyMapScreen,
             StationBuilderScreen stationBuilderScreen,
+            FleetManagementScreen fleetManagementScreen,
             IResourceRepository resourceRepository,
             GameConfigSO config)
         {
@@ -58,6 +60,7 @@ namespace GalacticEmpire.Presentation
             _hudScreen = hudScreen;
             _galaxyMapScreen = galaxyMapScreen;
             _stationBuilderScreen = stationBuilderScreen;
+            _fleetManagementScreen = fleetManagementScreen;
             _resourceRepository = resourceRepository;
             _config = config;
         }
@@ -169,10 +172,12 @@ namespace GalacticEmpire.Presentation
             _uiManager.Register(_hudScreen);
             _uiManager.Register(_galaxyMapScreen);
             _uiManager.Register(_stationBuilderScreen);
+            _uiManager.Register(_fleetManagementScreen);
 
             // Initialize HUD with resource repository
             _hudScreen.Initialize(_resourceRepository);
             _galaxyMapScreen.Initialize(_fleetService);
+            _fleetManagementScreen.Initialize(_fleetService);
 
             // Show Main Menu first
             await _uiManager.ShowAsync<MainMenuScreen>();
@@ -180,9 +185,11 @@ namespace GalacticEmpire.Presentation
             // When Play is pressed - switch to HUD
             _mainMenuScreen.OnPlayPressed += HandlePlayPressed;
 
-            // Galaxy map and station builder are overlays above HUD, not full screen swaps
+            // Galaxy map, station builder and fleet management are overlays above HUD,
+            // not full screen swaps
             _hudScreen.OnGalaxyPressed += HandleGalaxyPressed;
             _hudScreen.OnStationPressed += HandleStationPressed;
+            _hudScreen.OnFleetPressed += HandleFleetPressed;
 
             GELogger.Info(LogCategory.UI, "UI initialized. Main Menu shown.");
         }
@@ -216,6 +223,14 @@ namespace GalacticEmpire.Presentation
                 _stationBuilderScreen.HideAsync().Forget();
             else
                 _stationBuilderScreen.ShowAsync().Forget();
+        }
+
+        private void HandleFleetPressed()
+        {
+            if (_fleetManagementScreen.IsVisible)
+                _fleetManagementScreen.HideAsync().Forget();
+            else
+                _fleetManagementScreen.ShowAsync().Forget();
         }
     }
 }
