@@ -57,6 +57,15 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
 
         private void HandleGalaxyMapShown()
         {
+            // Re-render on every open, not just once at Construct() time. VContainer
+            // calls Construct() (and therefore the renderer's first Render()) while
+            // building the container - before GameEntryPoint.Initialize() has run
+            // InitializeGalaxy(), which is what actually generates/loads the galaxy.
+            // Without this, the renderer can show sectors from an empty or stale
+            // galaxy state whose IDs no longer match what's in the repository,
+            // causing "Sector not found" on Dispatch even right after a fresh Play.
+            _renderer.Render();
+
             if (_mapCamera != null)
                 return;
 

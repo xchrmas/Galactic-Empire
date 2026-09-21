@@ -1,4 +1,4 @@
-{
+﻿{
     "name":  "GalacticEmpire.Presentation",
     "rootNamespace":  "",
     "references":  [
@@ -18,7 +18,9 @@
         "GUID:ee31a95585701ff4f9ce7192cca3de8d",
         "GUID:758c3ae419697b545a5fe26b00e7a0aa",
         "GUID:d8dd31b5cfbb6904087aa18ac8c1642e",
-        "GUID:975c75d0c40566044a8afe1aa3a2d5b5"
+        "GUID:975c75d0c40566044a8afe1aa3a2d5b5",
+        "GUID:c284f4dc58cf2564da2329e34e692e28",
+        "GUID:c7519aae8808d484fb17af519603abfd"
     ],
     "includePlatforms":  [
 
@@ -40,3 +42,5 @@
     ],
     "noEngineReferences":  false
 }
+
+

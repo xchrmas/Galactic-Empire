@@ -1,0 +1,56 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="root" picking-mode="Ignore"
+        style="flex: 1; background-color: rgba(0,0,0,0); align-items: center;">
+
+        <!-- Battle panel - shown/hidden entirely by BattlePresenter, never a toggle button.
+             Centered via flex align-items on root rather than position:absolute + translate,
+             matching how the rest of the project avoids transform-based centering. -->
+        <ui:VisualElement name="battle-panel" picking-mode="Position"
+            style="margin-top: 80px; width: 380px;
+                   background-color: rgba(10,15,30,0.92); padding: 16px;
+                   border-color: rgba(255,120,80,0.5); border-width: 1px; border-radius: 4px;">
+
+            <ui:Label text="BATTLE"
+                style="font-size: 16px; color: rgba(255,160,120,1); -unity-font-style: bold;
+                       margin-bottom: 12px; -unity-text-align: middle-center;"/>
+
+            <!-- Attacker -->
+            <ui:VisualElement style="margin-bottom: 10px;">
+                <ui:Label name="attacker-name" text="Attacker"
+                    style="font-size: 13px; color: rgba(200,220,255,1); -unity-font-style: bold;"/>
+                <ui:Label name="attacker-ship-count" text="Ships: 0"
+                    style="font-size: 11px; color: rgba(150,170,200,1); margin-bottom: 4px;"/>
+                <ui:VisualElement name="attacker-health-bar"
+                    style="height: 10px; background-color: rgba(40,40,50,0.8); border-radius: 2px;">
+                    <ui:VisualElement name="attacker-health-fill"
+                        style="height: 100%; width: 100%; background-color: rgba(80,200,120,1); border-radius: 2px;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label text="VS"
+                style="font-size: 12px; color: rgba(150,150,160,1); -unity-text-align: middle-center; margin-bottom: 10px;"/>
+
+            <!-- Defender -->
+            <ui:VisualElement style="margin-bottom: 12px;">
+                <ui:Label name="defender-name" text="Defender"
+                    style="font-size: 13px; color: rgba(255,180,180,1); -unity-font-style: bold;"/>
+                <ui:Label name="defender-ship-count" text="Ships: 0"
+                    style="font-size: 11px; color: rgba(150,170,200,1); margin-bottom: 4px;"/>
+                <ui:VisualElement name="defender-health-bar"
+                    style="height: 10px; background-color: rgba(40,40,50,0.8); border-radius: 2px;">
+                    <ui:VisualElement name="defender-health-fill"
+                        style="height: 100%; width: 100%; background-color: rgba(80,200,120,1); border-radius: 2px;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label name="battle-outcome" text="" style="display: none;
+                font-size: 13px; color: rgba(255,220,140,1); -unity-font-style: bold;
+                -unity-text-align: middle-center; margin-bottom: 8px; white-space: normal;"/>
+
+            <ui:ScrollView name="battle-log" mode="Vertical"
+                style="max-height: 140px; background-color: rgba(0,0,0,0.25); padding: 6px; border-radius: 2px;"/>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

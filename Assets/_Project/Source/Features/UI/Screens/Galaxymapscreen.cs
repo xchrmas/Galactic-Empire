@@ -1,5 +1,14 @@
 // Galaxy map screen - shows sector info when the player clicks a sector.
 // Lets the player pick an idle fleet and dispatch it to the selected sector.
+//
+// Does NOT reference IEncounterService or BattlePresenter directly - both
+// live in Battle.Application/Battle.Presentation, and Battle.Presentation
+// references UI.Screens (for BattleHUDScreen), so a direct reference back
+// from here would create a circular assembly dependency (UI.Screens ->
+// Battle.Presentation -> UI.Screens), which Unity refuses to compile.
+// Instead this raises OnFleetDispatchedToSector, and GameEntryPoint (which
+// already references every layer) wires the encounter check from there.
+// See features/battle.md for the full encounter flow.
 
 using System;
 using System.Linq;
@@ -30,6 +39,11 @@ namespace GalacticEmpire.Feature.UI.Screens
         private IFleetService _fleetService;
         private bool _uiInitialized;
 
+        // Set by GameEntryPoint via SetBattleInProgressCheck - lets this screen
+        // block Dispatch while a battle is running without referencing
+        // BattlePresenter directly (see the circular-dependency note above).
+        private Func<bool> _isBattleInProgress;
+
         private SectorEntity _selectedSector;
         private FleetEntity[] _idleFleets = Array.Empty<FleetEntity>();
 
@@ -38,9 +52,23 @@ namespace GalacticEmpire.Feature.UI.Screens
         public event Action OnShown;
         public event Action OnHidden;
 
+        // Raised right after a successful Dispatch - GameEntryPoint subscribes
+        // to this to check IEncounterService and hand off to BattlePresenter,
+        // keeping this screen free of any Battle-layer reference.
+        public event Action<FleetEntity, Guid> OnFleetDispatchedToSector;
+
         public void Initialize(IFleetService fleetService)
         {
             _fleetService = fleetService;
+        }
+
+        /// <summary>
+        /// Lets GameEntryPoint plug in a "is a battle currently running" check
+        /// without this screen needing to reference BattlePresenter's type.
+        /// </summary>
+        public void SetBattleInProgressCheck(Func<bool> isBattleInProgress)
+        {
+            _isBattleInProgress = isBattleInProgress;
         }
 
         protected override void OnShow()
@@ -141,11 +169,19 @@ namespace GalacticEmpire.Feature.UI.Screens
                 return;
             }
 
+            if (_isBattleInProgress != null && _isBattleInProgress())
+            {
+                _dispatchFeedback.text = "A battle is already in progress.";
+                return;
+            }
+
             try
             {
-                _fleetService.Dispatch(new DispatchFleetCommand(fleet.Id, _selectedSector.Id));
+                var dispatchedFleet = _fleetService.Dispatch(new DispatchFleetCommand(fleet.Id, _selectedSector.Id));
                 _dispatchFeedback.text = $"{fleet.Name} dispatched to {_selectedSector.Name}.";
                 RefreshFleetDropdown();
+
+                OnFleetDispatchedToSector?.Invoke(dispatchedFleet, _selectedSector.Id);
             }
             catch (InvalidOperationException ex)
             {

@@ -1,4 +1,4 @@
-// Orchestrates battle flow - delegates simulation to CombatTickService
+﻿// Orchestrates battle flow - delegates simulation to CombatTickService
 // and updates fleet states after the battle ends.
 
 using System;
@@ -30,8 +30,42 @@ namespace GalacticEmpire.Feature.Battle.Application
             if (defender == null) throw new ArgumentNullException(nameof(defender));
 
             var result = _combatTickService.ResolveBattle(attacker, defender, sectorId);
+            PersistResult(result);
+            return result;
+        }
 
-            // Update surviving ships in the repository
+        /// <summary>Returns the last battle result.</summary>
+        public BattleResult GetLastResult() => _lastResult;
+
+        /// <summary>Creates and starts a battle without resolving it - caller drives ticks.</summary>
+        public BattleEntity CreateBattle(FleetEntity attacker, FleetEntity defender, Guid sectorId)
+        {
+            if (attacker == null) throw new ArgumentNullException(nameof(attacker));
+            if (defender == null) throw new ArgumentNullException(nameof(defender));
+
+            GELogger.Info(LogCategory.Battle,
+                $"Real-time battle started in sector {sectorId}. " +
+                $"Attacker: {attacker.Name} ({attacker.ShipCount} ships) vs " +
+                $"Defender: {defender.Name} ({defender.ShipCount} ships)");
+
+            return BattleEntity.Create(attacker, defender, sectorId).Start();
+        }
+
+        /// <summary>Persists the outcome of a finished battle, tick-driven or instant alike.</summary>
+        public BattleResult ApplyBattleResult(BattleEntity finishedBattle)
+        {
+            if (finishedBattle == null) throw new ArgumentNullException(nameof(finishedBattle));
+
+            var result = finishedBattle.GetResult();
+            PersistResult(result);
+            return result;
+        }
+
+        // Shared tail for both the instant (StartBattle) and tick-driven
+        // (ApplyBattleResult) paths - updates the repository and remembers
+        // the outcome for GetLastResult.
+        private void PersistResult(BattleResult result)
+        {
             if (!result.IsDraw)
             {
                 UpdateFleetAfterBattle(result.WinnerFleet);
@@ -44,20 +78,28 @@ namespace GalacticEmpire.Feature.Battle.Application
                 result.IsDraw
                     ? "Battle ended in a draw."
                     : $"Battle won by fleet {result.WinnerFleetId} in {result.TotalTicks} ticks.");
-
-            return result;
         }
-
-        /// <summary>Returns the last battle result.</summary>
-        public BattleResult GetLastResult() => _lastResult;
 
         private void UpdateFleetAfterBattle(FleetEntity fleet)
         {
             if (fleet == null) return;
 
-            // Update each surviving ship in the repository
+
             foreach (var ship in fleet.Ships)
-                _fleetRepository.Replace(ship);
+            {
+                try
+                {
+                    _fleetRepository.Replace(ship);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Ship not tracked in the repository - expected for NPC fleets,
+                    // logged at Info (not Warning) since this is the normal path for
+                    // every real-time battle against an EnemyFleetEntity opponent.
+                    GELogger.Info(LogCategory.Battle,
+                        $"Ship {ship.Id} not in IFleetRepository - skipped (NPC/ephemeral fleet).");
+                }
+            }
         }
     }
 }

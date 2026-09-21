@@ -143,6 +143,35 @@ namespace GalacticEmpire.Feature.Fleet.Application
             GELogger.Info(LogCategory.Fleet, $"Ship '{ship.Name}' queued for construction.");
         }
 
+        /// <summary>
+        /// Replaces the tracked fleet with its post-battle state - called by
+        /// BattlePresenter once a real-time battle finishes. Looks up by ID rather
+        /// than by the old record instance (unlike Dispatch/Recall's UpdateFleet),
+        /// since the caller only has the final BattleEntity's fleet, not the
+        /// original reference from _fleets.
+        /// </summary>
+        public void SyncFleetAfterBattle(FleetEntity updatedFleet)
+        {
+            if (updatedFleet == null)
+                throw new ArgumentNullException(nameof(updatedFleet));
+
+            int index = _fleets.FindIndex(f => f.Id == updatedFleet.Id);
+            if (index < 0)
+            {
+                GELogger.Warning(LogCategory.Fleet,
+                    $"SyncFleetAfterBattle: fleet {updatedFleet.Id} not found, nothing to update.");
+                return;
+            }
+
+            // Surviving fleet returns to Idle - destroyed fleets keep their
+            // Destroyed status as set by FleetEntity.ApplyBattleDamage during combat.
+            var synced = updatedFleet.IsDestroyed ? updatedFleet : updatedFleet.Recall();
+            _fleets[index] = synced;
+
+            GELogger.Info(LogCategory.Fleet,
+                $"Fleet '{synced.Name}' synced after battle - {synced.ShipCount} ship(s) remaining.");
+        }
+
         private FleetEntity GetFleetOrThrow(Guid fleetId)
         {
             var fleet = GetById(fleetId);

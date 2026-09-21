@@ -2,6 +2,7 @@
 
 using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Battle.Application;
+using GalacticEmpire.Feature.Battle.Presentation;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Fleet.Infrastructure;
 using GalacticEmpire.Feature.Galaxy.Application;
@@ -31,6 +32,7 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private GalaxyRepositorySO _galaxyRepository;
         [SerializeField] private GalaxyMapPresenter _galaxyMapPresenter;
         [SerializeField] private StationBuilderPresenter _stationBuilderPresenter;
+        [SerializeField] private BattlePresenter _battlePresenter;
 
         [SerializeField] private UIManager _uiManager;
         [SerializeField] private MainMenuScreen _mainMenuScreen;
@@ -38,6 +40,7 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private GalaxyMapScreen _galaxyMapScreen;
         [SerializeField] private StationBuilderScreen _stationBuilderScreen;
         [SerializeField] private FleetManagementScreen _fleetManagementScreen;
+        [SerializeField] private BattleHUDScreen _battleHUDScreen;
         [SerializeField] private GameConfigSO _config;
 
         protected override void Configure(IContainerBuilder builder)
@@ -60,6 +63,12 @@ namespace GalacticEmpire.Presentation
             builder.Register<CombatTickService>(Lifetime.Singleton);
             builder.Register<IBattleService, BattleService>(Lifetime.Singleton);
 
+            // Enemy fleets / encounters - in-memory garrison state, same pattern
+            // as FleetService's in-memory _fleets list (no persistence, BACKLOG-26)
+            builder.Register<ISectorGarrisonRepository, SectorGarrisonRepository>(Lifetime.Singleton);
+            builder.Register<EnemyFleetGeneratorService>(Lifetime.Singleton);
+            builder.Register<IEncounterService, EncounterService>(Lifetime.Singleton);
+
             // UI
             builder.RegisterComponent(_uiManager);
             builder.RegisterComponent(_mainMenuScreen);
@@ -69,6 +78,8 @@ namespace GalacticEmpire.Presentation
             builder.RegisterComponent(_stationBuilderScreen);
             builder.RegisterComponent(_stationBuilderPresenter);
             builder.RegisterComponent(_fleetManagementScreen);
+            builder.RegisterComponent(_battleHUDScreen);
+            builder.RegisterComponent(_battlePresenter);
 
             builder.RegisterEntryPoint<GameEntryPoint>();
         }

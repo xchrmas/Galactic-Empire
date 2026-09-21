@@ -38,5 +38,11 @@ namespace GalacticEmpire.Feature.Fleet.Application
 
         // Queues a ship for construction
         void BuildShip(BuildShipCommand cmd);
+
+        // Replaces the tracked fleet with its post-battle state (surviving ships,
+        // Status back to Idle) - BattlePresenter calls this after a real-time
+        // battle finishes, since FleetService is the only place that knows about
+        // the in-memory _fleets list a battle result needs to update.
+        void SyncFleetAfterBattle(FleetEntity updatedFleet);
     }
 }

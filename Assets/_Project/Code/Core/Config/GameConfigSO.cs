@@ -37,7 +37,7 @@ namespace GalacticEmpire.Core
         [Tooltip("Maximum number of modules a station can have.")]
         public int MaxStationModules = 20;
 
-        [Tooltip("Grid size — number of cells per row and column.")]
+        [Tooltip("Grid size - number of cells per row and column.")]
         public int StationGridSize = 6;
 
         [Tooltip("Size of each grid cell in world units.")]
@@ -50,8 +50,30 @@ namespace GalacticEmpire.Core
         [Tooltip("Maximum engagement range between ships in world units.")]
         public float MaxEngagementRange = 50f;
 
-        [Tooltip("Global damage multiplier — use for difficulty scaling.")]
+        [Tooltip("Global damage multiplier - use for difficulty scaling.")]
         public float DamageMultiplier = 1f;
+
+        [Header("Enemy Fleets")]
+        [Tooltip("Minimum sector ThreatLevel (0-1) required for an NPC garrison to spawn.")]
+        public float EnemyEncounterThreatThreshold = 0.5f;
+
+        [Tooltip("Minimum number of ships in a generated NPC garrison.")]
+        public int EnemyMinShipsPerSector = 1;
+
+        [Tooltip("Maximum number of ships in a generated NPC garrison.")]
+        public int EnemyMaxShipsPerSector = 4;
+
+        [Tooltip("Base hull for an NPC ship at ThreatLevel 0.")]
+        public float EnemyBaseHull = 20f;
+
+        [Tooltip("Additional hull granted at ThreatLevel 1, scaled linearly.")]
+        public float EnemyThreatHullScale = 80f;
+
+        [Tooltip("Base damage for an NPC ship at ThreatLevel 0.")]
+        public float EnemyBaseDamage = 5f;
+
+        [Tooltip("Additional damage granted at ThreatLevel 1, scaled linearly.")]
+        public float EnemyThreatDamageScale = 20f;
 
         [Header("Debug")]
         [Tooltip("Enable verbose logging in development builds.")]

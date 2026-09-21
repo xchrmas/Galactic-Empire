@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Battle.Application;
+using GalacticEmpire.Feature.Battle.Presentation;
 using GalacticEmpire.Feature.Fleet.Application;
+using GalacticEmpire.Feature.Fleet.Domain;
 using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Station.Application;
 using GalacticEmpire.Feature.UI.Core;
@@ -24,12 +27,15 @@ namespace GalacticEmpire.Presentation
         private readonly IResourceService _resourceService;
         private readonly IGalaxyService _galaxyService;
         private readonly IFleetService _fleetService;
+        private readonly IEncounterService _encounterService;
+        private readonly BattlePresenter _battlePresenter;
         private readonly UIManager _uiManager;
         private readonly MainMenuScreen _mainMenuScreen;
         private readonly HUDScreen _hudScreen;
         private readonly GalaxyMapScreen _galaxyMapScreen;
         private readonly StationBuilderScreen _stationBuilderScreen;
         private readonly FleetManagementScreen _fleetManagementScreen;
+        private readonly BattleHUDScreen _battleHUDScreen;
         private readonly IResourceRepository _resourceRepository;
         private readonly GameConfigSO _config;
 
@@ -41,12 +47,15 @@ namespace GalacticEmpire.Presentation
             IResourceService resourceService,
             IGalaxyService galaxyService,
             IFleetService fleetService,
+            IEncounterService encounterService,
+            BattlePresenter battlePresenter,
             UIManager uiManager,
             MainMenuScreen mainMenuScreen,
             HUDScreen hudScreen,
             GalaxyMapScreen galaxyMapScreen,
             StationBuilderScreen stationBuilderScreen,
             FleetManagementScreen fleetManagementScreen,
+            BattleHUDScreen battleHUDScreen,
             IResourceRepository resourceRepository,
             GameConfigSO config)
         {
@@ -55,12 +64,15 @@ namespace GalacticEmpire.Presentation
             _resourceService = resourceService;
             _galaxyService = galaxyService;
             _fleetService = fleetService;
+            _encounterService = encounterService;
+            _battlePresenter = battlePresenter;
             _uiManager = uiManager;
             _mainMenuScreen = mainMenuScreen;
             _hudScreen = hudScreen;
             _galaxyMapScreen = galaxyMapScreen;
             _stationBuilderScreen = stationBuilderScreen;
             _fleetManagementScreen = fleetManagementScreen;
+            _battleHUDScreen = battleHUDScreen;
             _resourceRepository = resourceRepository;
             _config = config;
         }
@@ -173,6 +185,7 @@ namespace GalacticEmpire.Presentation
             _uiManager.Register(_galaxyMapScreen);
             _uiManager.Register(_stationBuilderScreen);
             _uiManager.Register(_fleetManagementScreen);
+            _uiManager.Register(_battleHUDScreen);
 
             // Initialize HUD with resource repository
             _hudScreen.Initialize(_resourceRepository);
@@ -191,7 +204,32 @@ namespace GalacticEmpire.Presentation
             _hudScreen.OnStationPressed += HandleStationPressed;
             _hudScreen.OnFleetPressed += HandleFleetPressed;
 
+            // BattleHUDScreen has no HUD button and no toggle handler - BattlePresenter
+            // shows/hides it directly when a real-time encounter starts/ends (see
+            // features/battle.md). Registering it here only makes it known to
+            // UIManager, matching every other screen's registration.
+
+            // GalaxyMapScreen (in UI.Screens) can't reference IEncounterService or
+            // BattlePresenter directly - Battle.Presentation already references
+            // UI.Screens for BattleHUDScreen, so a reference back would be circular
+            // (see the note in Galaxymapscreen.cs). GameEntryPoint sits above both
+            // assemblies, so the wiring happens here instead.
+            _galaxyMapScreen.SetBattleInProgressCheck(() => _battlePresenter.IsBattleInProgress);
+            _galaxyMapScreen.OnFleetDispatchedToSector += HandleFleetDispatchedToSector;
+
             GELogger.Info(LogCategory.UI, "UI initialized. Main Menu shown.");
+        }
+
+        // No travel-time system exists yet (Dispatch is instant - see MASTER.md
+        // Section 8 / BACKLOG-26) so arrival is checked immediately after Dispatch
+        // rather than on a separate "fleet arrived" tick.
+        private void HandleFleetDispatchedToSector(FleetEntity dispatchedFleet, Guid sectorId)
+        {
+            var enemyFleet = _encounterService.CheckForEncounter(sectorId);
+            if (enemyFleet == null)
+                return;
+
+            _battlePresenter.StartEncounter(dispatchedFleet, enemyFleet, sectorId);
         }
 
         private void HandlePlayPressed()

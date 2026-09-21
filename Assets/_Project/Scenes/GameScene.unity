@@ -1274,6 +1274,90 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1705019516}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1134156854
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1134156858}
+  - component: {fileID: 1134156856}
+  - component: {fileID: 1134156857}
+  - component: {fileID: 1134156855}
+  m_Layer: 5
+  m_Name: UI_BattleHUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1134156855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134156854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3e96f7def23524f9f41d77392393f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.UI.Screens::GalacticEmpire.Feature.UI.Screens.BattleHUDScreen
+  _fadeDuration: 0.3
+  _document: {fileID: 1134156856}
+  _maxLogLines: 30
+--- !u!114 &1134156856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134156854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: d835b2a9475d7db43a047e5a559ae998, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 33fc160da74f45942a59a8f36fa60349, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!225 &1134156857
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134156854}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!4 &1134156858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134156854}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1198562951
 GameObject:
   m_ObjectHideFlags: 0
@@ -1329,12 +1413,14 @@ MonoBehaviour:
   _galaxyRepository: {fileID: 11400000, guid: 24d1cf295954a50439b88a407c1dffd4, type: 2}
   _galaxyMapPresenter: {fileID: 535506057}
   _stationBuilderPresenter: {fileID: 1705019517}
+  _battlePresenter: {fileID: 1911999219}
   _uiManager: {fileID: 165118571}
   _mainMenuScreen: {fileID: 1342669489}
   _hudScreen: {fileID: 164155406}
   _galaxyMapScreen: {fileID: 1968616400}
   _stationBuilderScreen: {fileID: 916642492}
   _fleetManagementScreen: {fileID: 1550093840}
+  _battleHUDScreen: {fileID: 1134156855}
   _config: {fileID: 11400000, guid: 262d8f56a8d279143ac50ff6599d6fb6, type: 2}
 --- !u!114 &1198562954
 MonoBehaviour:
@@ -1894,6 +1980,65 @@ MonoBehaviour:
   starRadiusBias: 1
   starPulseSpeedMin: 0
   starPulseSpeedMax: 1
+--- !u!1 &1911999218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1911999221}
+  - component: {fileID: 1911999220}
+  - component: {fileID: 1911999219}
+  m_Layer: 0
+  m_Name: BattlePresenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1911999219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911999218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ffec9771ac92a44b6619a00c59f4b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.Battle.Presentation::GalacticEmpire.Feature.Battle.Presentation.BattlePresenter
+  _battleHUDScreen: {fileID: 1134156855}
+  _outcomeDisplaySeconds: 2
+--- !u!225 &1911999220
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911999218}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!4 &1911999221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911999218}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1938891236
 GameObject:
   m_ObjectHideFlags: 0
@@ -2128,6 +2273,8 @@ SceneRoots:
   - {fileID: 164155405}
   - {fileID: 1968616403}
   - {fileID: 1550093843}
+  - {fileID: 1134156858}
   - {fileID: 916642495}
   - {fileID: 165118572}
   - {fileID: 1705019516}
+  - {fileID: 1911999221}
