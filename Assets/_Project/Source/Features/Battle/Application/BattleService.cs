@@ -84,7 +84,15 @@ namespace GalacticEmpire.Feature.Battle.Application
         {
             if (fleet == null) return;
 
-
+            // Update each surviving ship in the repository - but only if it's
+            // actually tracked there. StartBattle's instant path always deals in
+            // player fleets, so every ship is a repository hit. The real-time path
+            // (CreateBattle/ApplyBattleResult) can also involve an ephemeral NPC
+            // fleet (EnemyFleetEntity.ToFleetEntity()) that was never added to
+            // IFleetRepository and never should be - BattlePresenter is responsible
+            // for syncing the player's fleet separately via
+            // IFleetService.SyncFleetAfterBattle, so a missing ship here just means
+            // "this side of the battle wasn't a player fleet", not an error.
             foreach (var ship in fleet.Ships)
             {
                 try

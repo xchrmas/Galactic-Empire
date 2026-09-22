@@ -1,6 +1,4 @@
-//Core Central game configuration asset.
-
-
+//Core Central game configuration asset
 
 using UnityEngine;
 

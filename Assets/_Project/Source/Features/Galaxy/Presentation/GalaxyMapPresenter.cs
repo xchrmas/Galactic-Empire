@@ -1,6 +1,5 @@
 ﻿// Provides the link between VContainer and GalaxyMapRenderer's MonoBehavior dependency injection.
 // Also forwards sector click events from the renderer to the GalaxyMapScreen.
-//
 // Uses a dedicated orthographic camera for the galaxy map view instead of moving
 // the shared Main Camera - the main camera carries SGT free-look scripts and a
 // huge (scale 1000) decorative background object that kept interfering with any
