@@ -172,6 +172,30 @@ namespace GalacticEmpire.Feature.Fleet.Application
                 $"Fleet '{synced.Name}' synced after battle - {synced.ShipCount} ship(s) remaining.");
         }
 
+        /// <summary>Creates the starting ship and registers the starting fleet - no-op if a fleet already exists.</summary>
+        public FleetEntity EnsureStartingFleet(string fleetName, string shipName, float maxHull, float damage, float speed)
+        {
+            if (_fleets.Count > 0)
+                return _fleets[0];
+
+            var ship = ShipEntity.Create(shipName, maxHull, damage, speed);
+            _fleetRepository.Add(ship);
+
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = RegisterStartingFleet(fleetName, ships);
+
+            GELogger.Info(LogCategory.Fleet, $"Fleet ready. Ships: {_fleetRepository.GetAll().Count}");
+
+            return fleet;
+        }
+
+        /// <summary>Removes all fleets and ships - resets state at game start.</summary>
+        public void ClearFleet()
+        {
+            _fleetRepository.Clear();
+            _fleets.Clear();
+        }
+
         private FleetEntity GetFleetOrThrow(Guid fleetId)
         {
             var fleet = GetById(fleetId);

@@ -1,7 +1,6 @@
 // Main game loop - no MonoBehaviour, VContainer manages the lifecycle.
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using GalacticEmpire.Core;
@@ -15,15 +14,13 @@ using GalacticEmpire.Feature.UI.Core;
 using GalacticEmpire.Feature.UI.Screens;
 using UnityEngine;
 using VContainer.Unity;
-using GalacticEmpire.Feature.Station.Domain;
 
 namespace GalacticEmpire.Presentation
 {
     /// <summary>Starts all game systems on scene load.</summary>
     public sealed class GameEntryPoint : IInitializable, IDisposable
     {
-        private readonly IFleetRepository _fleetRepository;
-        private readonly IStationRepository _stationRepository;
+        private readonly IStationService _stationService;
         private readonly IResourceService _resourceService;
         private readonly IGalaxyService _galaxyService;
         private readonly IFleetService _fleetService;
@@ -42,8 +39,7 @@ namespace GalacticEmpire.Presentation
         private CancellationTokenSource _cts;
 
         public GameEntryPoint(
-            IFleetRepository fleetRepository,
-            IStationRepository stationRepository,
+            IStationService stationService,
             IResourceService resourceService,
             IGalaxyService galaxyService,
             IFleetService fleetService,
@@ -59,8 +55,7 @@ namespace GalacticEmpire.Presentation
             IResourceRepository resourceRepository,
             GameConfigSO config)
         {
-            _fleetRepository = fleetRepository;
-            _stationRepository = stationRepository;
+            _stationService = stationService;
             _resourceService = resourceService;
             _galaxyService = galaxyService;
             _fleetService = fleetService;
@@ -84,8 +79,10 @@ namespace GalacticEmpire.Presentation
             // Repositories are ScriptableObject assets - Unity keeps their data
             // between Play sessions in the Editor. Clearing here guarantees every
             // run starts from the same clean state instead of accumulating leftovers.
-            _stationRepository.Clear();
-            _fleetRepository.Clear();
+            // Routed through each feature's service, not the repository directly -
+            // see MASTER.md Section 5 "Startup state reset".
+            _stationService.ClearStation();
+            _fleetService.ClearFleet();
             _galaxyService.ClearGalaxy();
 
             InitializeStation();
@@ -106,28 +103,12 @@ namespace GalacticEmpire.Presentation
 
         private void InitializeStation()
         {
-            if (!_stationRepository.HasStation())
-            {
-                var station = StationEntity.Create("Galactic Empire HQ", _config.StationGridSize);
-                _stationRepository.Save(station);
-                GELogger.Info(LogCategory.Station, $"Station created: {station.Name}");
-            }
-            else
-            {
-                var station = _stationRepository.Get();
-                GELogger.Info(LogCategory.Station, $"Station loaded: {station.Name} | Modules: {station.TotalModules}");
-            }
+            _stationService.EnsureStation("Galactic Empire HQ", _config.StationGridSize);
         }
 
         private void InitializeFleet()
         {
-            var ship = ShipEntity.Create("Destroyer I", _config.MaxFleetSize, 25f, _config.DefaultShipSpeed);
-            _fleetRepository.Add(ship);
-
-            var ships = new List<ShipEntity> { ship }.AsReadOnly();
-            _fleetService.RegisterStartingFleet("Home Fleet", ships);
-
-            GELogger.Info(LogCategory.Fleet, $"Fleet ready. Ships: {_fleetRepository.GetAll().Count}");
+            _fleetService.EnsureStartingFleet("Home Fleet", "Destroyer I", _config.MaxFleetSize, 25f, _config.DefaultShipSpeed);
         }
 
         private void InitializeGalaxy()

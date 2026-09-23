@@ -44,5 +44,15 @@ namespace GalacticEmpire.Feature.Fleet.Application
         // battle finishes, since FleetService is the only place that knows about
         // the in-memory _fleets list a battle result needs to update.
         void SyncFleetAfterBattle(FleetEntity updatedFleet);
+
+        // Creates the player's starting ship and registers it as the starting
+        // fleet - called once at boot, mirrors IGalaxyService's get-or-create
+        // shape. Safe to call more than once (no-op if a fleet already exists),
+        // though in practice it only runs right after ClearFleet() at startup.
+        FleetEntity EnsureStartingFleet(string fleetName, string shipName, float maxHull, float damage, float speed);
+
+        // Removes all fleets and ships - used to reset state at game start so
+        // Editor Play sessions don't accumulate leftover fleets from prior runs
+        void ClearFleet();
     }
 }

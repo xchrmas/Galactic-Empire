@@ -26,6 +26,30 @@ namespace GalacticEmpire.Feature.Station.Application
         /// <summary>Returns the player's station.</summary>
         public StationEntity GetStation() => _stationRepository.Get();
 
+        /// <summary>Returns the existing station, or creates one if none exists yet.</summary>
+        public StationEntity EnsureStation(string name, int gridSize)
+        {
+            if (_stationRepository.HasStation())
+            {
+                var existing = _stationRepository.Get();
+                GELogger.Info(LogCategory.Station,
+                    $"Station loaded: {existing.Name} | Modules: {existing.TotalModules}");
+                return existing;
+            }
+
+            var station = StationEntity.Create(name, gridSize);
+            _stationRepository.Save(station);
+
+            GELogger.Info(LogCategory.Station, $"Station created: {station.Name}");
+            return station;
+        }
+
+        /// <summary>Removes the saved station - resets state at game start.</summary>
+        public void ClearStation()
+        {
+            _stationRepository.Clear();
+        }
+
         /// <summary>Places a new module - checks module limit and resources first.</summary>
         public StationEntity PlaceModule(PlaceModuleCommand cmd)
         {
