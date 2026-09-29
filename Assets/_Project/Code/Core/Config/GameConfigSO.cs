@@ -61,17 +61,32 @@ namespace GalacticEmpire.Core
         [Tooltip("Maximum number of ships in a generated NPC garrison.")]
         public int EnemyMaxShipsPerSector = 4;
 
-        [Tooltip("Base hull for an NPC ship at ThreatLevel 0.")]
-        public float EnemyBaseHull = 20f;
+        [Tooltip("Base hull for an NPC ship at ThreatLevel 0. Tuned (2026-09-24 balance " +
+            "session) via simulation against the 1-ship, 50-hull/25-damage player starting " +
+            "fleet so a typical encounter is close to a coinflip rather than a guaranteed " +
+            "win or loss - see battle.md for the simulated win rates.")]
+        public float EnemyBaseHull = 350f;
 
-        [Tooltip("Additional hull granted at ThreatLevel 1, scaled linearly.")]
-        public float EnemyThreatHullScale = 80f;
+        [Tooltip("Additional hull granted at ThreatLevel 1, scaled linearly. Tuned " +
+            "alongside EnemyBaseHull (2026-09-24 balance session) - see battle.md.")]
+        public float EnemyThreatHullScale = 100f;
 
-        [Tooltip("Base damage for an NPC ship at ThreatLevel 0.")]
-        public float EnemyBaseDamage = 5f;
+        [Tooltip("Base per-ship damage for an NPC ship at ThreatLevel 0. Tuned " +
+            "(2026-09-24 balance session) against the 1-ship, 50-hull/25-damage player " +
+            "starting fleet under the round-robin combat model in BattleEntity.SimulateTick.")]
+        public float EnemyBaseDamage = 0.9f;
 
-        [Tooltip("Additional damage granted at ThreatLevel 1, scaled linearly.")]
-        public float EnemyThreatDamageScale = 20f;
+        [Tooltip("Per-ship damage change per point of ThreatLevel, scaled linearly. " +
+            "NEGATIVE by design (2026-09-24 balance session): higher ThreatLevel spawns " +
+            "MORE NPC ships (see EnemyMinShipsPerSector/EnemyMaxShipsPerSector), and " +
+            "against a lone-ship player fleet every NPC ship's damage stacks onto that " +
+            "one target each tick (round-robin only spreads damage when the RECEIVING " +
+            "side has multiple ships). A negative scale keeps the NPC fleet's total " +
+            "damage-per-tick roughly stable as ship count grows with threat, instead of " +
+            "compounding both factors and one-shotting the player. See battle.md for the " +
+            "worked numbers (targets ~30-50 ticks for a 1-ship player to lose to a typical " +
+            "garrison across ThreatLevel 0.5-1.0).")]
+        public float EnemyThreatDamageScale = -0.6f;
 
         [Header("Debug")]
         [Tooltip("Enable verbose logging in development builds.")]

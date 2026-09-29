@@ -53,6 +53,36 @@ namespace GalacticEmpire.Feature.UI.Core
                 await screen.HideAsync();
         }
 
+        /// <summary>
+        /// Toggles a screen open/closed - hides it if already visible, otherwise
+        /// shows it via ShowAsync (which hides whatever else was open first).
+        /// Use this for mutually-exclusive overlay buttons (Galaxy/Station/Fleet)
+        /// instead of calling the screen's ShowAsync/HideAsync directly, or two
+        /// overlays end up visible at once (the ScreenBase CanvasGroup fade only
+        /// controls that one screen's own alpha - it has no idea another screen
+        /// is also on).
+        /// </summary>
+        public async UniTask ToggleAsync<T>() where T : IScreen
+        {
+            if (!_screens.TryGetValue(typeof(T), out var screen))
+            {
+                GELogger.Error(LogCategory.UI, $"Screen not registered: {typeof(T).Name}");
+                return;
+            }
+
+            if (screen.IsVisible)
+            {
+                await screen.HideAsync();
+
+                if (ReferenceEquals(_currentScreen, screen))
+                    _currentScreen = null;
+            }
+            else
+            {
+                await ShowAsync<T>();
+            }
+        }
+
         /// <summary>Returns true if the given screen is currently visible.</summary>
         public bool IsVisible<T>() where T : IScreen
         {

@@ -229,27 +229,20 @@ namespace GalacticEmpire.Presentation
 
         private void HandleGalaxyPressed()
         {
-            // Toggle: hide if already open, show otherwise - HUD stays visible either way
-            if (_galaxyMapScreen.IsVisible)
-                _galaxyMapScreen.HideAsync().Forget();
-            else
-                _galaxyMapScreen.ShowAsync().Forget();
+            // Routed through UIManager (not called directly on the screen) so
+            // Galaxy/Station/Fleet stay mutually exclusive - ToggleAsync hides
+            // whichever of the other two was open before showing this one.
+            _uiManager.ToggleAsync<GalaxyMapScreen>().Forget();
         }
 
         private void HandleStationPressed()
         {
-            if (_stationBuilderScreen.IsVisible)
-                _stationBuilderScreen.HideAsync().Forget();
-            else
-                _stationBuilderScreen.ShowAsync().Forget();
+            _uiManager.ToggleAsync<StationBuilderScreen>().Forget();
         }
 
         private void HandleFleetPressed()
         {
-            if (_fleetManagementScreen.IsVisible)
-                _fleetManagementScreen.HideAsync().Forget();
-            else
-                _fleetManagementScreen.ShowAsync().Forget();
+            _uiManager.ToggleAsync<FleetManagementScreen>().Forget();
         }
     }
 }
