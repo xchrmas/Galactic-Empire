@@ -25,6 +25,13 @@ MonoBehaviour:
   BattleTickRate: 0.05
   MaxEngagementRange: 50
   DamageMultiplier: 1
+  EnemyEncounterThreatThreshold: 0.5
+  EnemyMinShipsPerSector: 1
+  EnemyMaxShipsPerSector: 4
+  EnemyBaseHull: 350
+  EnemyThreatHullScale: 100
+  EnemyBaseDamage: 0.9
+  EnemyThreatDamageScale: -0.6
   VerboseLogging: 1
   ShowFPSOverlay: 1
   ShowDebugGizmos: 1
