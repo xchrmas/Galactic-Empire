@@ -6,6 +6,8 @@ using Cysharp.Threading.Tasks;
 using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Battle.Application;
 using GalacticEmpire.Feature.Battle.Presentation;
+using GalacticEmpire.Feature.Exploration.Application;
+using GalacticEmpire.Feature.Exploration.Domain;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Fleet.Domain;
 using GalacticEmpire.Feature.Galaxy.Application;
@@ -25,6 +27,7 @@ namespace GalacticEmpire.Presentation
         private readonly IGalaxyService _galaxyService;
         private readonly IFleetService _fleetService;
         private readonly IEncounterService _encounterService;
+        private readonly IExplorationService _explorationService;
         private readonly BattlePresenter _battlePresenter;
         private readonly UIManager _uiManager;
         private readonly MainMenuScreen _mainMenuScreen;
@@ -37,6 +40,7 @@ namespace GalacticEmpire.Presentation
         private readonly GameConfigSO _config;
 
         private CancellationTokenSource _cts;
+        private CancellationTokenSource _explorationCts;
 
         public GameEntryPoint(
             IStationService stationService,
@@ -44,6 +48,7 @@ namespace GalacticEmpire.Presentation
             IGalaxyService galaxyService,
             IFleetService fleetService,
             IEncounterService encounterService,
+            IExplorationService explorationService,
             BattlePresenter battlePresenter,
             UIManager uiManager,
             MainMenuScreen mainMenuScreen,
@@ -60,6 +65,7 @@ namespace GalacticEmpire.Presentation
             _galaxyService = galaxyService;
             _fleetService = fleetService;
             _encounterService = encounterService;
+            _explorationService = explorationService;
             _battlePresenter = battlePresenter;
             _uiManager = uiManager;
             _mainMenuScreen = mainMenuScreen;
@@ -84,11 +90,13 @@ namespace GalacticEmpire.Presentation
             _stationService.ClearStation();
             _fleetService.ClearFleet();
             _galaxyService.ClearGalaxy();
+            _explorationService.ClearMissions();
 
             InitializeStation();
             InitializeFleet();
             InitializeGalaxy();
             StartEconomy();
+            StartExploration();
             InitializeUI().Forget();
 
             GELogger.Info(LogCategory.System, "All systems online.");
@@ -98,6 +106,8 @@ namespace GalacticEmpire.Presentation
         {
             _cts?.Cancel();
             _cts?.Dispose();
+            _explorationCts?.Cancel();
+            _explorationCts?.Dispose();
             GELogger.Info(LogCategory.System, "Shutting down.");
         }
 
@@ -135,6 +145,36 @@ namespace GalacticEmpire.Presentation
             var wallet = _resourceService.GetCurrentWallet();
             GELogger.Info(LogCategory.Economy,
                 $"Economy started. Metal: {wallet.Get(ResourceType.Metal)} | Energy: {wallet.Get(ResourceType.Energy)}");
+        }
+
+        private void StartExploration()
+        {
+            _explorationCts = new CancellationTokenSource();
+            _explorationService.StartMissionTickLoopAsync(_explorationCts.Token).Forget();
+
+            // Exploration never calls into Battle.Application directly
+            // (MASTER.md Section 3) - this callback lets ExplorationService
+            // ask "does this sector have an encounter" without referencing
+            // IEncounterService/BattlePresenter itself. Same shape as
+            // _galaxyMapScreen.SetBattleInProgressCheck below.
+            _explorationService.SetEncounterCheck(ResolveEncounterForMission);
+        }
+
+        // Called by ExplorationService when a mission's fleet arrives at its
+        // target sector. Returns true (and starts the real-time battle) if
+        // the sector has an unresolved NPC garrison, false if it's clear.
+        private bool ResolveEncounterForMission(MissionEntity mission)
+        {
+            var enemyFleet = _encounterService.CheckForEncounter(mission.TargetSectorId);
+            if (enemyFleet == null)
+                return false;
+
+            var fleet = _fleetService.GetById(mission.FleetId);
+            if (fleet == null)
+                return false;
+
+            _battlePresenter.StartEncounter(fleet, enemyFleet, mission.TargetSectorId);
+            return true;
         }
 
         // Runs production tick and refreshes HUD every interval
@@ -198,19 +238,22 @@ namespace GalacticEmpire.Presentation
             _galaxyMapScreen.SetBattleInProgressCheck(() => _battlePresenter.IsBattleInProgress);
             _galaxyMapScreen.OnFleetDispatchedToSector += HandleFleetDispatchedToSector;
 
+            // Auto-return (VISION.md decision 2) needs to know the encounter's
+            // outcome - BattlePresenter raises this once a real-time battle
+            // finishes and the result has been applied.
+            _battlePresenter.OnEncounterResolved += _explorationService.NotifyEncounterResolved;
+
             GELogger.Info(LogCategory.UI, "UI initialized. Main Menu shown.");
         }
 
-        // No travel-time system exists yet (Dispatch is instant - see MASTER.md
-        // Section 8 / BACKLOG-26) so arrival is checked immediately after Dispatch
-        // rather than on a separate "fleet arrived" tick.
+        // Dispatch is no longer instant (Exploration Stage 1a) - the fleet
+        // starts a MissionEntity instead of resolving arrival on the spot.
+        // Encounter/discovery/reward happen when ExplorationService's tick
+        // loop detects the fleet has reached its target - see
+        // ResolveEncounterForMission above and ExplorationService.ResolveArrival.
         private void HandleFleetDispatchedToSector(FleetEntity dispatchedFleet, Guid sectorId)
         {
-            var enemyFleet = _encounterService.CheckForEncounter(sectorId);
-            if (enemyFleet == null)
-                return;
-
-            _battlePresenter.StartEncounter(dispatchedFleet, enemyFleet, sectorId);
+            _explorationService.StartMission(new StartMissionCommand(dispatchedFleet, sectorId));
         }
 
         private void HandlePlayPressed()

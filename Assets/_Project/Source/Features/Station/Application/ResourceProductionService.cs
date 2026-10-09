@@ -78,5 +78,17 @@ namespace GalacticEmpire.Feature.Station.Application
 
             _resourceRepository.Save(wallet);
         }
+
+        /// <summary>Grants a one-off resource amount outside the production tick (e.g. mission rewards).</summary>
+        public void GrantResources(ResourceType type, float amount)
+        {
+            if (amount <= 0f)
+                return;
+
+            var wallet = _resourceRepository.Get().Add(type, amount);
+            _resourceRepository.Save(wallet);
+
+            GELogger.Info(LogCategory.Economy, $"Granted +{amount:F1} {type} → total {wallet.Get(type):F1}");
+        }
     }
 }

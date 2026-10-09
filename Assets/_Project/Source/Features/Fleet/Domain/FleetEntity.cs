@@ -26,6 +26,10 @@ namespace GalacticEmpire.Feature.Fleet.Domain
         public float TotalDamage => Ships.Sum(s => s.Damage);
         public float CombatPower => TotalHull * TotalDamage;
 
+        // Fleet travels at its slowest ship's speed - escorts/damaged ships
+        // can later apply a slowdown by changing ShipEntity.Speed, not this formula.
+        public float Speed => Ships.Count > 0 ? Ships.Min(s => s.Speed) : 0f;
+
         /// <summary>Creates a new fleet ready for duty.</summary>
         public static FleetEntity Create(string name, IReadOnlyList<ShipEntity> ships)
         {

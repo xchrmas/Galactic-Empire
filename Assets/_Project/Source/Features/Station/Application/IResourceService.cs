@@ -16,5 +16,9 @@ namespace GalacticEmpire.Feature.Station.Application
 
         // Single tick-handy for tests and manual triggers
         void Tick();
+
+        // Adds resources directly to the wallet - used for one-off grants
+        // (mission rewards, events) that aren't tied to station production
+        void GrantResources(GalacticEmpire.Core.ResourceType type, float amount);
     }
 }

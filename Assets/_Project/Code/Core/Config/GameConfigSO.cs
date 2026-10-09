@@ -18,6 +18,16 @@ namespace GalacticEmpire.Core
         [Tooltip("Time in seconds between fleet simulation ticks.")]
         public float FleetTickRate = 0.1f;
 
+        [Header("Exploration")]
+        [Tooltip("Travel time in seconds per hop (graph edge) between sectors, divided by fleet Speed.")]
+        public float BaseSecondsPerHop = 10f;
+
+        [Tooltip("Resources granted per point of sector ResourceRichness (0-1) on successful exploration.")]
+        public float ExplorationRewardPerRichness = 100f;
+
+        [Tooltip("Time in seconds between exploration mission simulation ticks.")]
+        public float ExplorationTickRate = 1f;
+
         [Header("Economy")]
         [Tooltip("Starting metal for a new empire.")]
         public float StartingMetal = 500f;

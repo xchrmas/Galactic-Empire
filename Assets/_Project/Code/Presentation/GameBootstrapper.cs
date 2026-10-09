@@ -3,6 +3,7 @@
 using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Battle.Application;
 using GalacticEmpire.Feature.Battle.Presentation;
+using GalacticEmpire.Feature.Exploration.Application;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Fleet.Infrastructure;
 using GalacticEmpire.Feature.Galaxy.Application;
@@ -48,6 +49,11 @@ namespace GalacticEmpire.Presentation
             // Config is needed everywhere
             builder.RegisterInstance(_config);
 
+            // First real consumer of IClock/SystemClock (added to Core
+            // 2026-10-03 alongside MissionEntity, not registered until now -
+            // see features/exploration.md Known gaps).
+            builder.Register<IClock, SystemClock>(Lifetime.Singleton);
+
             // Repositories
             builder.RegisterInstance(_fleetRepository).As<IFleetRepository>();
             builder.RegisterInstance(_stationRepository).As<IStationRepository>();
@@ -68,6 +74,11 @@ namespace GalacticEmpire.Presentation
             builder.Register<ISectorGarrisonRepository, SectorGarrisonRepository>(Lifetime.Singleton);
             builder.Register<EnemyFleetGeneratorService>(Lifetime.Singleton);
             builder.Register<IEncounterService, EncounterService>(Lifetime.Singleton);
+
+            // Exploration - missions in-memory only, same pattern as Battle's
+            // garrison state (no Infrastructure layer yet, see features/exploration.md)
+            builder.Register<IMissionRepository, MissionRepository>(Lifetime.Singleton);
+            builder.Register<IExplorationService, ExplorationService>(Lifetime.Singleton);
 
             // UI
             builder.RegisterComponent(_uiManager);

@@ -43,6 +43,12 @@ namespace GalacticEmpire.Feature.Battle.Presentation
         private CancellationTokenSource _cts;
         private bool _battleInProgress;
 
+        // Raised once a battle finishes and the outcome has been applied -
+        // ExplorationService subscribes to know when a mission's encounter is
+        // resolved, so it can start the return trip only after a win (losing
+        // or drawing leaves the fleet at the sector - repair/respawn is Stage 1b).
+        public event Action<Guid, bool> OnEncounterResolved;
+
         // VContainer injects this via method injection - same pattern GalaxyMapPresenter uses
         [Inject]
         public void Construct(
@@ -124,8 +130,12 @@ namespace GalacticEmpire.Feature.Battle.Presentation
 
                 ShowOutcome(result, playerFleet);
 
-                if (!result.IsDraw && result.WinnerFleetId == playerFleet.Id)
+                bool playerWon = !result.IsDraw && result.WinnerFleetId == playerFleet.Id;
+
+                if (playerWon)
                     _encounterService.ResolveEncounter(sectorId);
+
+                OnEncounterResolved?.Invoke(playerFleet.Id, playerWon);
 
                 await UniTask.Delay(
                     TimeSpan.FromSeconds(_outcomeDisplaySeconds),
