@@ -246,11 +246,18 @@ namespace GalacticEmpire.Feature.Exploration.Application
             var completed = mission.Complete();
             _missionRepository.Remove(completed.Id);
 
-            // Fleet is Moving (set by Dispatch) with no further FleetService
-            // call to bring it back to Idle - FleetEntity.Recall() is the
-            // obvious candidate but changes FleetStatus semantics mid-flight
-            // without a repair step (Stage 1b). Left as a known gap rather
-            // than guessing at behavior outside this step's scope.
+            // Bring the fleet back to Idle - same Recall() call
+            // FleetService.SyncFleetAfterBattle already uses for a surviving
+            // fleet after combat, so this matches an existing precedent
+            // rather than introducing new FleetStatus semantics. Skipped
+            // only if the fleet no longer exists or was destroyed (e.g. lost
+            // its last ship after NotifyEncounterResolved but somehow still
+            // reached here) - Recall() throws on a destroyed fleet, and
+            // there is nothing to recall if it's gone.
+            var fleet = _fleetService.GetById(completed.FleetId);
+            if (fleet != null && !fleet.IsDestroyed)
+                _fleetService.Recall(new RecallFleetCommand(completed.FleetId));
+
             GELogger.Info(LogCategory.System, $"Mission {completed.Id}: fleet is home.");
         }
 
