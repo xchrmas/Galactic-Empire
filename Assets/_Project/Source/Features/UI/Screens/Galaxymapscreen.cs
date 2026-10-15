@@ -128,10 +128,27 @@ namespace GalacticEmpire.Feature.UI.Screens
             _sectorPanel.style.display = DisplayStyle.Flex;
 
             _sectorName.text = sector.Name;
-            _sectorType.text = $"Type: {sector.Type}";
-            _sectorRichness.text = $"Resource Richness: {sector.ResourceRichness * 100f:F0}%";
-            _sectorThreat.text = $"Threat Level: {sector.ThreatLevel * 100f:F0}%";
-            _sectorStatus.text = sector.IsOwned ? "Owned" : "Unowned";
+
+            // Frontier sectors (reachable but not yet discovered) hide their
+            // real type/richness/threat - that's what "undiscovered" means.
+            // The player can still see the sector exists and Dispatch to it;
+            // only the Domain data stays hidden until a mission discovers it
+            // on arrival (see features/exploration.md).
+            if (sector.IsDiscovered)
+            {
+                _sectorType.text = $"Type: {sector.Type}";
+                _sectorRichness.text = $"Resource Richness: {sector.ResourceRichness * 100f:F0}%";
+                _sectorThreat.text = $"Threat Level: {sector.ThreatLevel * 100f:F0}%";
+                _sectorStatus.text = sector.IsOwned ? "Owned" : "Unowned";
+            }
+            else
+            {
+                _sectorType.text = "Type: Unknown";
+                _sectorRichness.text = "Resource Richness: ?";
+                _sectorThreat.text = "Threat Level: ?";
+                _sectorStatus.text = "Undiscovered - dispatch a fleet to explore";
+            }
+
             _dispatchFeedback.text = "";
 
             RefreshFleetDropdown();

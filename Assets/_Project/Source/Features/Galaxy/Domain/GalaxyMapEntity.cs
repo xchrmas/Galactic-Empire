@@ -89,5 +89,35 @@ namespace GalacticEmpire.Feature.Galaxy.Domain
                 .ToList()
                 .AsReadOnly();
         }
+
+        /// <summary>
+        /// True if toSectorId can be reached from fromSectorId by following
+        /// NeighbourIds, regardless of IsDiscovered - reachability is a graph
+        /// fact, discovery is a fog-of-war fact, and Dispatch only needs the
+        /// former (discovery happens on mission arrival, not before).
+        /// </summary>
+        public bool IsReachable(Guid fromSectorId, Guid toSectorId)
+        {
+            if (fromSectorId == toSectorId)
+                return true;
+
+            var visited = new HashSet<Guid> { fromSectorId };
+            var frontier = new Queue<Guid>();
+            frontier.Enqueue(fromSectorId);
+
+            while (frontier.Count > 0)
+            {
+                foreach (var neighbour in GetNeighbours(frontier.Dequeue()))
+                {
+                    if (neighbour.Id == toSectorId)
+                        return true;
+
+                    if (visited.Add(neighbour.Id))
+                        frontier.Enqueue(neighbour.Id);
+                }
+            }
+
+            return false;
+        }
     }
 }

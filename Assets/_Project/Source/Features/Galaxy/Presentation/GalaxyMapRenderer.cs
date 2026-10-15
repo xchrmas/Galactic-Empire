@@ -30,6 +30,10 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
         [SerializeField] private Color _blackHoleColor = new Color(0.1f, 0.1f, 0.1f);
         [SerializeField] private Color _ownedColor = new Color(0.2f, 0.6f, 1.0f);
 
+        [Header("Frontier (reachable, undiscovered)")]
+        [Tooltip("Color for a reachable sector the player hasn't discovered yet - shown as '?' instead of its real type/richness/threat.")]
+        [SerializeField] private Color _frontierColor = new Color(0.55f, 0.55f, 0.6f, 0.6f);
+
 
         private IGalaxyService _galaxyService;
         private readonly List<GameObject> _sectorObjects = new();
@@ -54,11 +58,41 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
             if (galaxy == null)
                 return;
 
-            foreach (var sector in galaxy.Sectors)
-                SpawnSector(sector);
+            // Frontier = reachable from any owned sector but not yet
+            // discovered - these get a '?' marker instead of staying fully
+            // hidden, so the player has something to target with Dispatch
+            // (FleetService.Dispatch now validates reachability, not
+            // discovery - see features/fleet.md and features/exploration.md
+            // "Known gaps" for why).
+            var frontierIds = GetFrontierSectorIds(galaxy);
 
             foreach (var sector in galaxy.Sectors)
-                DrawConnections(sector, galaxy);
+                SpawnSector(sector, frontierIds.Contains(sector.Id));
+
+            foreach (var sector in galaxy.Sectors)
+                DrawConnections(sector, galaxy, frontierIds);
+        }
+
+        /// <summary>
+        /// All undiscovered sectors reachable from any owned sector - the
+        /// "?" frontier. Not cached - Render() runs once per map open, which
+        /// is cheap enough (BACKLOG-20 already tracks pooling for the whole
+        /// renderer, this piggybacks on the same cost).
+        /// </summary>
+        private static HashSet<Guid> GetFrontierSectorIds(GalaxyMapEntity galaxy)
+        {
+            var frontier = new HashSet<Guid>();
+
+            foreach (var owned in galaxy.GetOwnedSectors())
+            {
+                foreach (var sector in galaxy.Sectors)
+                {
+                    if (!sector.IsDiscovered && galaxy.IsReachable(owned.Id, sector.Id))
+                        frontier.Add(sector.Id);
+                }
+            }
+
+            return frontier;
         }
 
         /// <summary>Center and radius (in local space) of all currently active sectors - used to frame the map camera automatically.</summary>
@@ -90,7 +124,7 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
             return true;
         }
 
-        private void SpawnSector(SectorEntity sector)
+        private void SpawnSector(SectorEntity sector, bool isFrontier)
         {
             var go = _sectorPrefab != null
                 ? Instantiate(_sectorPrefab, transform)
@@ -99,19 +133,26 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
             // Position based on sector's 2D world position
             go.transform.localPosition = new Vector3(sector.Position.x, sector.Position.y, 0f);
             go.transform.localScale = Vector3.one * _sectorScale;
-            go.name = sector.Name;
+            go.name = isFrontier ? $"{sector.Name} (?)" : sector.Name;
 
-            // Color based on type and ownership
+            // Color based on type and ownership - frontier sectors show a
+            // distinct muted color regardless of their real (hidden) type
             var renderer = go.GetComponent<SpriteRenderer>();
             if (renderer != null)
-                renderer.color = GetSectorColor(sector);
+                renderer.color = isFrontier ? _frontierColor : GetSectorColor(sector);
 
-            // Undiscovered sectors are hidden and can't be clicked yet
-            if (sector.IsDiscovered)
+            // Discovered sectors are clickable with full info. Frontier
+            // sectors are ALSO clickable (so the player can Dispatch to
+            // them - that's the point of showing them at all), but
+            // GalaxyMapScreen.ShowSectorInfo hides type/richness/threat for
+            // them based on IsDiscovered. Only fully-unknown, unreachable
+            // sectors stay hidden (true fog of war).
+            bool isVisible = sector.IsDiscovered || isFrontier;
+
+            if (isVisible)
                 WireClickHandler(go, sector);
 
-            // Hide undiscovered sectors (fog of war)
-            go.SetActive(sector.IsDiscovered);
+            go.SetActive(isVisible);
 
             _sectorObjects.Add(go);
         }
@@ -134,15 +175,20 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
             OnSectorSelected?.Invoke(sector);
         }
 
-        private void DrawConnections(SectorEntity sector, GalaxyMapEntity galaxy)
+        private void DrawConnections(SectorEntity sector, GalaxyMapEntity galaxy, HashSet<Guid> frontierIds)
         {
-            if (!sector.IsDiscovered)
+            bool sectorVisible = sector.IsDiscovered || frontierIds.Contains(sector.Id);
+            if (!sectorVisible)
                 return;
 
             foreach (var neighbourId in sector.NeighbourIds)
             {
                 var neighbour = galaxy.GetSector(neighbourId);
-                if (neighbour == null || !neighbour.IsDiscovered)
+                if (neighbour == null)
+                    continue;
+
+                bool neighbourVisible = neighbour.IsDiscovered || frontierIds.Contains(neighbour.Id);
+                if (!neighbourVisible)
                     continue;
 
                 // Avoid drawing duplicate lines

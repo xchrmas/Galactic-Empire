@@ -91,7 +91,7 @@ namespace GalacticEmpire.Feature.Fleet.Application
             return fleet;
         }
 
-        /// <summary>Dispatches a fleet toward a target sector - validates the sector is discovered first.</summary>
+        /// <summary>Dispatches a fleet toward a target sector - validates the sector is reachable first.</summary>
         public FleetEntity Dispatch(DispatchFleetCommand cmd)
         {
             var fleet = GetFleetOrThrow(cmd.FleetId);
@@ -102,8 +102,17 @@ namespace GalacticEmpire.Feature.Fleet.Application
             if (targetSector == null)
                 throw new InvalidOperationException($"Sector {cmd.TargetSectorId} not found.");
 
-            if (!targetSector.IsDiscovered)
-                throw new InvalidOperationException($"Sector {targetSector.Name} has not been discovered yet.");
+            // Reachability, not discovery - fog of war is a Presentation/
+            // Exploration concern now (a mission discovers its target sector
+            // on arrival, see features/exploration.md). Requiring
+            // IsDiscovered here would make genuine exploration impossible,
+            // since nothing discovers a sector before Dispatch anymore.
+            var homeSector = galaxy.GetOwnedSectors().FirstOrDefault();
+            if (homeSector == null)
+                throw new InvalidOperationException("No owned (home) sector - cannot validate dispatch target.");
+
+            if (!galaxy.IsReachable(homeSector.Id, targetSector.Id))
+                throw new InvalidOperationException($"Sector {targetSector.Name} is not reachable.");
 
             var updated = fleet.Dispatch(cmd.TargetSectorId);
 

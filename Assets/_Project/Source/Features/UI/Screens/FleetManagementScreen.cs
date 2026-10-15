@@ -4,6 +4,9 @@
 // actually chosen, no point duplicating sector selection here.
 
 using System;
+using System.Linq;
+using GalacticEmpire.Feature.Exploration.Application;
+using GalacticEmpire.Feature.Exploration.Domain;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Fleet.Domain;
 using GalacticEmpire.Feature.UI.Core;
@@ -29,11 +32,13 @@ namespace GalacticEmpire.Feature.UI.Screens
         private Label _feedback;
 
         private IFleetService _fleetService;
+        private IExplorationService _explorationService;
         private bool _uiInitialized;
 
-        public void Initialize(IFleetService fleetService)
+        public void Initialize(IFleetService fleetService, IExplorationService explorationService)
         {
             _fleetService = fleetService;
+            _explorationService = explorationService;
         }
 
         protected override void OnShow()
@@ -132,7 +137,7 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             if (fleet.Status == FleetStatus.Moving && fleet.TargetSectorId.HasValue)
             {
-                row.Add(new Label($"Target sector: {fleet.TargetSectorId.Value}")
+                row.Add(new Label(BuildMissionStatusText(fleet))
                 {
                     style = { fontSize = 10, color = new Color(120f / 255f, 200f / 255f, 255f / 255f), marginBottom = 6 }
                 });
@@ -150,6 +155,38 @@ namespace GalacticEmpire.Feature.UI.Screens
             row.Add(recallButton);
 
             return row;
+        }
+
+        /// <summary>
+        /// ETA/status text for a Moving fleet's active mission - falls back
+        /// to the raw sector id if no mission is tracked yet (e.g. a fleet
+        /// dispatched before Exploration existed, or a one-frame gap right
+        /// after Dispatch before StartMission runs).
+        /// </summary>
+        private string BuildMissionStatusText(FleetEntity fleet)
+        {
+            MissionEntity mission = _explorationService?.GetActiveMissions()
+                .FirstOrDefault(m => m.FleetId == fleet.Id);
+
+            if (mission == null)
+                return $"Target sector: {fleet.TargetSectorId.Value}";
+
+            return mission.Status switch
+            {
+                MissionStatus.OutboundTravel => $"En route - ETA {SecondsUntil(mission.ArrivesAtUtc):F0}s",
+                MissionStatus.Arrived => "Arrived - encounter in progress",
+                MissionStatus.ReturnTravel => $"Returning home - ETA {SecondsUntil(mission.ReturnArrivesAtUtc):F0}s",
+                _ => mission.Status.ToString()
+            };
+        }
+
+        private static double SecondsUntil(DateTime? utc)
+        {
+            if (!utc.HasValue)
+                return 0;
+
+            double remaining = (utc.Value - DateTime.UtcNow).TotalSeconds;
+            return remaining > 0 ? remaining : 0;
         }
 
         private void RenderBlueprintList()

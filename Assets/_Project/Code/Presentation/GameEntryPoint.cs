@@ -211,7 +211,7 @@ namespace GalacticEmpire.Presentation
             // Initialize HUD with resource repository
             _hudScreen.Initialize(_resourceRepository);
             _galaxyMapScreen.Initialize(_fleetService);
-            _fleetManagementScreen.Initialize(_fleetService);
+            _fleetManagementScreen.Initialize(_fleetService, _explorationService);
 
             // Show Main Menu first
             await _uiManager.ShowAsync<MainMenuScreen>();
