@@ -154,6 +154,29 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             row.Add(recallButton);
 
+            // A destroyed fleet can't be recalled (nothing left to recall) -
+            // give the player a way to dismiss the dead entry instead of
+            // leaving a permanently-grayed-out RECALL button with no
+            // explanation (Stage 1b: "no empty fleet" dead end). Building a
+            // replacement fleet already works via the existing "Build New
+            // Fleet" section below - no change needed there.
+            if (fleet.IsDestroyed)
+            {
+                row.Add(new Label("Fleet destroyed - no survivors.")
+                {
+                    style = { fontSize = 10, color = new Color(255f / 255f, 140f / 255f, 140f / 255f), marginTop = 4, marginBottom = 4 }
+                });
+
+                var disbandButton = new Button(() => HandleDisbandPressed(fleet)) { text = "DISBAND" };
+                disbandButton.style.height = 26;
+                disbandButton.style.fontSize = 11;
+                disbandButton.style.marginTop = 4;
+                disbandButton.style.backgroundColor = new Color(60f / 255f, 60f / 255f, 60f / 255f, 0.8f);
+                disbandButton.style.color = new Color(220f / 255f, 220f / 255f, 220f / 255f);
+
+                row.Add(disbandButton);
+            }
+
             return row;
         }
 
@@ -218,6 +241,20 @@ namespace GalacticEmpire.Feature.UI.Screens
             {
                 _fleetService.Recall(new RecallFleetCommand(fleet.Id));
                 _feedback.text = $"{fleet.Name} recalled.";
+                Refresh();
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or ArgumentException)
+            {
+                _feedback.text = ex.Message;
+            }
+        }
+
+        private void HandleDisbandPressed(FleetEntity fleet)
+        {
+            try
+            {
+                _fleetService.RemoveFleet(fleet.Id);
+                _feedback.text = $"{fleet.Name} disbanded.";
                 Refresh();
             }
             catch (Exception ex) when (ex is InvalidOperationException or ArgumentException)

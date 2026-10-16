@@ -134,6 +134,18 @@ namespace GalacticEmpire.Feature.Fleet.Application
             return updated;
         }
 
+        /// <summary>Recalls a fleet AND heals it - the "arrives home" case (Stage 1b).</summary>
+        public FleetEntity RecallAndRepair(RecallFleetCommand cmd)
+        {
+            var fleet = GetFleetOrThrow(cmd.FleetId);
+            var updated = fleet.Recall().Repair();
+
+            UpdateFleet(fleet, updated);
+
+            GELogger.Info(LogCategory.Fleet, $"Fleet '{fleet.Name}' recalled and repaired.");
+            return updated;
+        }
+
         /// <summary>Queues a single ship for construction.</summary>
         public void BuildShip(BuildShipCommand cmd)
         {
@@ -172,9 +184,11 @@ namespace GalacticEmpire.Feature.Fleet.Application
                 return;
             }
 
-            // Surviving fleet returns to Idle - destroyed fleets keep their
-            // Destroyed status as set by FleetEntity.ApplyBattleDamage during combat.
-            var synced = updatedFleet.IsDestroyed ? updatedFleet : updatedFleet.Recall();
+            // Surviving fleet returns to Idle AND heals (Stage 1b - "fleets
+            // heal at the station") - destroyed fleets keep their Destroyed
+            // status as set by FleetEntity.ApplyBattleDamage during combat,
+            // nothing left to repair.
+            var synced = updatedFleet.IsDestroyed ? updatedFleet : updatedFleet.Recall().Repair();
             _fleets[index] = synced;
 
             GELogger.Info(LogCategory.Fleet,
@@ -203,6 +217,19 @@ namespace GalacticEmpire.Feature.Fleet.Application
         {
             _fleetRepository.Clear();
             _fleets.Clear();
+        }
+
+        /// <summary>Removes a single destroyed fleet entry - the player dismissing a dead fleet from the list.</summary>
+        public void RemoveFleet(Guid fleetId)
+        {
+            var fleet = GetFleetOrThrow(fleetId);
+
+            if (!fleet.IsDestroyed)
+                throw new InvalidOperationException($"Fleet '{fleet.Name}' is not destroyed - recall it instead of removing it.");
+
+            _fleets.Remove(fleet);
+
+            GELogger.Info(LogCategory.Fleet, $"Fleet '{fleet.Name}' (destroyed) removed from the list.");
         }
 
         private FleetEntity GetFleetOrThrow(Guid fleetId)

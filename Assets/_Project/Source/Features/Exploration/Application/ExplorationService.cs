@@ -157,10 +157,22 @@ namespace GalacticEmpire.Feature.Exploration.Application
 
             if (!playerWon)
             {
-                // Fleet lost or drew - stays at the sector. No auto-return,
-                // no reward. Repair/recall/respawn is Stage 1b, out of scope.
+                // A loss or draw always means the player's fleet was fully
+                // destroyed - BattleEntity.DetermineStatus only ends a battle
+                // once one side (or both, on a draw) is fully IsDestroyed, so
+                // "survived but lost" is not a reachable outcome (confirmed
+                // 2026-10-15, see BattlePresenter.OnEncounterResolved). There
+                // is nothing left to send home or repair - drop the mission
+                // so it doesn't linger in GetActive() forever referencing a
+                // dead fleet (it would sit at Status.Arrived indefinitely,
+                // since Tick() only advances IsOutbound or ReturnTravel
+                // missions). The destroyed fleet entry itself is cleaned up
+                // separately via FleetService.RemoveFleet (Disband in
+                // FleetManagementScreen) - see features/fleet.md.
+                _missionRepository.Remove(mission.Id);
+
                 GELogger.Info(LogCategory.System,
-                    $"Mission {mission.Id}: encounter not won, fleet remains at sector {mission.TargetSectorId}.");
+                    $"Mission {mission.Id}: encounter not won, fleet destroyed - mission dropped.");
                 return;
             }
 
@@ -246,17 +258,20 @@ namespace GalacticEmpire.Feature.Exploration.Application
             var completed = mission.Complete();
             _missionRepository.Remove(completed.Id);
 
-            // Bring the fleet back to Idle - same Recall() call
-            // FleetService.SyncFleetAfterBattle already uses for a surviving
-            // fleet after combat, so this matches an existing precedent
-            // rather than introducing new FleetStatus semantics. Skipped
-            // only if the fleet no longer exists or was destroyed (e.g. lost
-            // its last ship after NotifyEncounterResolved but somehow still
-            // reached here) - Recall() throws on a destroyed fleet, and
-            // there is nothing to recall if it's gone.
+            // Bring the fleet back to Idle AND heal it (Stage 1b / VISION.md
+            // decision 2: "the fleet is repaired at the station on return" -
+            // this line was already written before Repair() existed; wiring
+            // it in now fulfils it). Same Recall()+Repair() combo
+            // FleetService.SyncFleetAfterBattle uses for a surviving fleet
+            // after combat - matches that precedent rather than introducing
+            // new semantics. Skipped only if the fleet no longer exists or
+            // was destroyed (e.g. lost its last ship after
+            // NotifyEncounterResolved but somehow still reached here) -
+            // Recall()/Repair() both throw on a destroyed fleet, and there
+            // is nothing to recall or repair if it's gone.
             var fleet = _fleetService.GetById(completed.FleetId);
             if (fleet != null && !fleet.IsDestroyed)
-                _fleetService.Recall(new RecallFleetCommand(completed.FleetId));
+                _fleetService.RecallAndRepair(new RecallFleetCommand(completed.FleetId));
 
             GELogger.Info(LogCategory.System, $"Mission {completed.Id}: fleet is home.");
         }

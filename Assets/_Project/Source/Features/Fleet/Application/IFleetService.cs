@@ -36,6 +36,13 @@ namespace GalacticEmpire.Feature.Fleet.Application
         // Recalls a fleet back to station
         FleetEntity Recall(RecallFleetCommand cmd);
 
+        // Recalls a fleet AND heals it - the "arrives home" case (Stage 1b:
+        // "fleets heal at the station"). A plain Recall() alone leaves
+        // battle damage on survivors; this is what ExplorationService's
+        // mission-return path uses, and what a future "fly fleet home
+        // manually" UI action should use too, rather than plain Recall().
+        FleetEntity RecallAndRepair(RecallFleetCommand cmd);
+
         // Queues a ship for construction
         void BuildShip(BuildShipCommand cmd);
 
@@ -54,5 +61,11 @@ namespace GalacticEmpire.Feature.Fleet.Application
         // Removes all fleets and ships - used to reset state at game start so
         // Editor Play sessions don't accumulate leftover fleets from prior runs
         void ClearFleet();
+
+        // Removes a single destroyed fleet entry - lets the player dismiss a
+        // dead fleet from the list (Stage 1b: "no empty fleet" dead end).
+        // Only valid for a destroyed fleet; a living fleet must be Recalled,
+        // not removed, so it can't vanish mid-mission.
+        void RemoveFleet(Guid fleetId);
     }
 }

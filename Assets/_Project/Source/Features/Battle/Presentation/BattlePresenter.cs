@@ -45,8 +45,17 @@ namespace GalacticEmpire.Feature.Battle.Presentation
 
         // Raised once a battle finishes and the outcome has been applied -
         // ExplorationService subscribes to know when a mission's encounter is
-        // resolved, so it can start the return trip only after a win (losing
-        // or drawing leaves the fleet at the sector - repair/respawn is Stage 1b).
+        // resolved, so it can start the return trip only after a win (a loss
+        // or draw means the player's fleet was destroyed - BattleEntity's own
+        // termination rule (DetermineStatus) only ends a battle once one side
+        // or both sides are fully IsDestroyed, so "survived but lost" is not a
+        // reachable combat outcome; no stranded-but-alive fleet case exists).
+        // SyncFleetAfterBattle below heals+recalls any SURVIVING fleet
+        // unconditionally (win or draw-survivor, though draw-survivor can't
+        // actually happen per the above) - Stage 1b repair, closed. A fully
+        // destroyed fleet (loss or draw) stays Destroyed and is handled via
+        // FleetService.RemoveFleet (Disband) + rebuilding, not repair - see
+        // features/fleet.md.
         public event Action<Guid, bool> OnEncounterResolved;
 
         // VContainer injects this via method injection - same pattern GalaxyMapPresenter uses

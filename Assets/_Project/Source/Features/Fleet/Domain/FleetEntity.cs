@@ -87,6 +87,24 @@ namespace GalacticEmpire.Feature.Fleet.Domain
             return this with { Status = FleetStatus.Retreating };
         }
 
+        /// <summary>
+        /// Returns a new fleet with every surviving ship restored to full
+        /// hull - a fleet "healing at the station" (VISION.md Stage 1b /
+        /// decision 2: "the fleet is repaired at the station on return").
+        /// Uses ShipEntity.Repair(), already present in Domain but unused
+        /// until now. Does nothing to Status - callers combine this with
+        /// Recall() the same way damage and status change were already
+        /// separate concerns in ApplyBattleDamage.
+        /// </summary>
+        public FleetEntity Repair()
+        {
+            if (IsDestroyed)
+                throw new InvalidOperationException($"Fleet {Name} is destroyed and cannot be repaired.");
+
+            var healedShips = Ships.Select(s => s.Repair()).ToList().AsReadOnly();
+            return this with { Ships = healedShips };
+        }
+
         /// <summary>Apply damage results from a battle tick - updates individual ships.</summary>
         public FleetEntity ApplyBattleDamage(Guid shipId, float damage)
         {
