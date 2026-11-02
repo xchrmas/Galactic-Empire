@@ -775,6 +775,7 @@ MonoBehaviour:
   _nebulaColor: {r: 0.4, g: 0.2, b: 0.8, a: 1}
   _blackHoleColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
   _ownedColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+  _frontierColor: {r: 0.55, g: 0.55, b: 0.6, a: 0.6}
 --- !u!114 &535506057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -918,6 +919,98 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &607026721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 607026725}
+  - component: {fileID: 607026724}
+  - component: {fileID: 607026723}
+  - component: {fileID: 607026722}
+  m_Layer: 5
+  m_Name: UI_ShipBuilder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &607026722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607026721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caba723bbdef14645a9cb1cfa3b21a20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalacticEmpire.Feature.UI.Screens::GalacticEmpire.Feature.UI.Screens.ShipBuilderScreen
+  _fadeDuration: 0.3
+  _document: {fileID: 607026724}
+  _availableModules:
+  - {fileID: 11400000, guid: 9f03922b69e0bf147a1248c2dde4d18a, type: 2}
+  - {fileID: 11400000, guid: c97cb7364393b8e4aab1a1c2373c3793, type: 2}
+  - {fileID: 11400000, guid: 4fa60229f82fa69428004a11f04b8b14, type: 2}
+  - {fileID: 11400000, guid: 365b1811210ff7b419a216e9be23b6c2, type: 2}
+  - {fileID: 11400000, guid: 4b4bae9aec63a04478f6a6ed15c40800, type: 2}
+  - {fileID: 11400000, guid: c01ccb4bc143a2447a90bffc078fa37c, type: 2}
+  - {fileID: 11400000, guid: def9418e3069026468cbc86ae2cf15cb, type: 2}
+  - {fileID: 11400000, guid: f24be72de1ec7604db17677a0407b58c, type: 2}
+--- !u!225 &607026723
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607026721}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &607026724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607026721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: d835b2a9475d7db43a047e5a559ae998, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 2e5dc3a4a48ef4d4a81ffe6d487d1423, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &607026725
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607026721}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &738452465
 GameObject:
   m_ObjectHideFlags: 0
@@ -1420,6 +1513,7 @@ MonoBehaviour:
   _galaxyMapScreen: {fileID: 1968616400}
   _stationBuilderScreen: {fileID: 916642492}
   _fleetManagementScreen: {fileID: 1550093840}
+  _shipBuilderScreen: {fileID: 607026722}
   _battleHUDScreen: {fileID: 1134156855}
   _config: {fileID: 11400000, guid: 262d8f56a8d279143ac50ff6599d6fb6, type: 2}
 --- !u!114 &1198562954
@@ -2278,3 +2372,4 @@ SceneRoots:
   - {fileID: 165118572}
   - {fileID: 1705019516}
   - {fileID: 1911999221}
+  - {fileID: 607026725}

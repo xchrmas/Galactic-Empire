@@ -1,4 +1,4 @@
-﻿// Provides the link between VContainer and GalaxyMapRenderer's MonoBehavior dependency injection.
+// Provides the link between VContainer and GalaxyMapRenderer's MonoBehavior dependency injection.
 // Also forwards sector click events from the renderer to the GalaxyMapScreen.
 // Uses a dedicated orthographic camera for the galaxy map view instead of moving
 // the shared Main Camera - the main camera carries SGT free-look scripts and a
@@ -47,7 +47,7 @@ namespace GalacticEmpire.Feature.Galaxy.Presentation
                 return;
             }
 
-            _galaxyMapScreen.Initialize(fleetService);
+            _galaxyMapScreen.Initialize(fleetService, galaxyService);
             _renderer.OnSectorSelected += _galaxyMapScreen.ShowSectorInfo;
 
             _galaxyMapScreen.OnShown += HandleGalaxyMapShown;

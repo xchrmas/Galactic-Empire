@@ -1,5 +1,13 @@
 // Handles all fleet use cases - checks resources, builds entities, persists state.
 // This is the only place where fleet business rules and resource checks combine.
+//
+// 2026-10-21 (Stage 1c): CreateFleet/BuildShip no longer call
+// cmd.Blueprint.CreateEntity() - commands now carry already-built ShipEntity
+// instances and pre-computed costs, since ShipBlueprintSO moved to
+// Infrastructure and this assembly (Application) must not reference it. See
+// IFleetService.cs's header comment and FleetManagementScreen.cs for the
+// caller-side change. Also adds InstallModule/RemoveModule (module fit-out
+// use cases) and FindShip (locates a ship across all tracked fleets).
 
 using System;
 using System.Collections.Generic;
@@ -53,40 +61,40 @@ namespace GalacticEmpire.Feature.Fleet.Application
             return _fleets.FirstOrDefault(f => f.Id == fleetId);
         }
 
-        /// <summary>Creates a new fleet - checks resources and fleet size limit first.</summary>
+        /// <summary>Finds a ship by id across every tracked fleet - null if none has it (Stage 1c).</summary>
+        public ShipEntity FindShip(Guid shipId)
+        {
+            return _fleets
+                .SelectMany(f => f.Ships)
+                .FirstOrDefault(s => s.Id == shipId);
+        }
+
+        /// <summary>Creates a new fleet from already-built ships - checks resources and fleet size limit first.</summary>
         public FleetEntity CreateFleet(CreateFleetCommand cmd)
         {
             if (_fleets.Count >= _config.MaxFleetSize)
                 throw new InvalidOperationException($"Fleet limit reached ({_config.MaxFleetSize}).");
 
-            float totalMetal  = cmd.Blueprint.MetalCost  * cmd.ShipCount;
-            float totalEnergy = cmd.Blueprint.EnergyCost * cmd.ShipCount;
-
             var wallet = _resourceRepository.Get();
 
-            if (!wallet.CanAfford(ResourceType.Metal, totalMetal))
-                throw new InvalidOperationException($"Not enough Metal. Need {totalMetal}.");
+            if (!wallet.CanAfford(ResourceType.Metal, cmd.TotalMetalCost))
+                throw new InvalidOperationException($"Not enough Metal. Need {cmd.TotalMetalCost}.");
 
-            if (!wallet.CanAfford(ResourceType.Energy, totalEnergy))
-                throw new InvalidOperationException($"Not enough Energy. Need {totalEnergy}.");
+            if (!wallet.CanAfford(ResourceType.Energy, cmd.TotalEnergyCost))
+                throw new InvalidOperationException($"Not enough Energy. Need {cmd.TotalEnergyCost}.");
 
-            wallet = wallet.Spend(ResourceType.Metal, totalMetal);
-            wallet = wallet.Spend(ResourceType.Energy, totalEnergy);
+            wallet = wallet.Spend(ResourceType.Metal, cmd.TotalMetalCost);
+            wallet = wallet.Spend(ResourceType.Energy, cmd.TotalEnergyCost);
             _resourceRepository.Save(wallet);
 
-            var ships = Enumerable.Range(0, cmd.ShipCount)
-                .Select(_ => cmd.Blueprint.CreateEntity())
-                .ToList()
-                .AsReadOnly();
-
-            var fleet = FleetEntity.Create(cmd.Name, ships);
+            var fleet = FleetEntity.Create(cmd.Name, cmd.Ships);
             _fleets.Add(fleet);
 
             foreach (var ship in fleet.Ships)
                 _fleetRepository.Add(ship);
 
             GELogger.Info(LogCategory.Fleet,
-                $"Fleet '{fleet.Name}' created with {fleet.ShipCount} {cmd.Blueprint.ShipName}(s).");
+                $"Fleet '{fleet.Name}' created with {fleet.ShipCount} ship(s).");
 
             return fleet;
         }
@@ -146,22 +154,74 @@ namespace GalacticEmpire.Feature.Fleet.Application
             return updated;
         }
 
-        /// <summary>Queues a single ship for construction.</summary>
+        /// <summary>Queues a single already-built ship for construction.</summary>
         public void BuildShip(BuildShipCommand cmd)
         {
             var wallet = _resourceRepository.Get();
 
-            if (!wallet.CanAfford(ResourceType.Metal, cmd.Blueprint.MetalCost))
-                throw new InvalidOperationException($"Not enough Metal to build {cmd.Blueprint.ShipName}.");
+            if (!wallet.CanAfford(ResourceType.Metal, cmd.MetalCost))
+                throw new InvalidOperationException($"Not enough Metal to build {cmd.Ship.Name}.");
 
-            wallet = wallet.Spend(ResourceType.Metal, cmd.Blueprint.MetalCost);
-            wallet = wallet.Spend(ResourceType.Energy, cmd.Blueprint.EnergyCost);
+            wallet = wallet.Spend(ResourceType.Metal, cmd.MetalCost);
+            wallet = wallet.Spend(ResourceType.Energy, cmd.EnergyCost);
             _resourceRepository.Save(wallet);
 
-            var ship = cmd.Blueprint.CreateEntity();
-            _fleetRepository.Add(ship);
+            _fleetRepository.Add(cmd.Ship);
 
-            GELogger.Info(LogCategory.Fleet, $"Ship '{ship.Name}' queued for construction.");
+            GELogger.Info(LogCategory.Fleet, $"Ship '{cmd.Ship.Name}' queued for construction.");
+        }
+
+        /// <summary>
+        /// Installs a module into one of a ship's slots (Stage 1c) - checks
+        /// resource affordability, then finds which fleet the ship belongs
+        /// to and replaces it there via FleetEntity.ReplaceShip (which itself
+        /// enforces the fleet being Idle).
+        /// </summary>
+        public ShipEntity InstallModule(InstallModuleCommand cmd)
+        {
+            var wallet = _resourceRepository.Get();
+
+            if (!wallet.CanAfford(ResourceType.Metal, cmd.MetalCost))
+                throw new InvalidOperationException($"Not enough Metal to install {cmd.Module.Name}.");
+
+            if (!wallet.CanAfford(ResourceType.Energy, cmd.EnergyCost))
+                throw new InvalidOperationException($"Not enough Energy to install {cmd.Module.Name}.");
+
+            var fleet = FindFleetContainingShip(cmd.ShipId);
+            var ship = fleet.Ships.First(s => s.Id == cmd.ShipId);
+
+            var updatedShip = ship.InstallModule(cmd.SlotIndex, cmd.Module);
+            var updatedFleet = fleet.ReplaceShip(updatedShip);
+
+            wallet = wallet.Spend(ResourceType.Metal, cmd.MetalCost);
+            wallet = wallet.Spend(ResourceType.Energy, cmd.EnergyCost);
+            _resourceRepository.Save(wallet);
+
+            UpdateFleet(fleet, updatedFleet);
+            _fleetRepository.Replace(updatedShip);
+
+            GELogger.Info(LogCategory.Fleet,
+                $"Installed '{cmd.Module.Name}' into slot {cmd.SlotIndex} of '{ship.Name}'.");
+
+            return updatedShip;
+        }
+
+        /// <summary>Removes a module from one of a ship's slots (Stage 1c) - no resource refund.</summary>
+        public ShipEntity RemoveModule(RemoveModuleCommand cmd)
+        {
+            var fleet = FindFleetContainingShip(cmd.ShipId);
+            var ship = fleet.Ships.First(s => s.Id == cmd.ShipId);
+
+            var updatedShip = ship.RemoveModule(cmd.SlotIndex);
+            var updatedFleet = fleet.ReplaceShip(updatedShip);
+
+            UpdateFleet(fleet, updatedFleet);
+            _fleetRepository.Replace(updatedShip);
+
+            GELogger.Info(LogCategory.Fleet,
+                $"Removed module from slot {cmd.SlotIndex} of '{ship.Name}'.");
+
+            return updatedShip;
         }
 
         /// <summary>
@@ -237,6 +297,14 @@ namespace GalacticEmpire.Feature.Fleet.Application
             var fleet = GetById(fleetId);
             if (fleet == null)
                 throw new InvalidOperationException($"Fleet {fleetId} not found.");
+            return fleet;
+        }
+
+        private FleetEntity FindFleetContainingShip(Guid shipId)
+        {
+            var fleet = _fleets.FirstOrDefault(f => f.Ships.Any(s => s.Id == shipId));
+            if (fleet == null)
+                throw new InvalidOperationException($"Ship {shipId} not found in any fleet.");
             return fleet;
         }
 

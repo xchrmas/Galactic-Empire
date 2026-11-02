@@ -1,6 +1,14 @@
 // Layer: Core.Tests - Unit tests for ShipEntity domain logic.
+//
+// 2026-10-21: added explicit "using GalacticEmpire.Feature.Fleet.Domain;" -
+// ShipEntity migrated there from GalacticEmpire.Core (Stage 1c). This file
+// previously had no using for ShipEntity's namespace at all; if that
+// somehow compiled before, it was relying on GalacticEmpire.Core.Tests'
+// namespace prefix matching GalacticEmpire.Core, which is not how C# type
+// resolution works - this explicit using is correct either way.
 
 using System;
+using GalacticEmpire.Feature.Fleet.Domain;
 using NUnit.Framework;
 
 namespace GalacticEmpire.Core.Tests
@@ -112,5 +120,82 @@ namespace GalacticEmpire.Core.Tests
             Assert.That(damaged.Hull, Is.EqualTo(40f));
         }
 
+
+        // Stage 1c - module slots
+
+        [Test]
+        public void CreateWithSlots_BuildsEmptySlotsInGivenOrder()
+        {
+            var categories = new[] { ShipModuleCategory.Weapon, ShipModuleCategory.Armor };
+
+            var ship = ShipEntity.CreateWithSlots("Destroyer", 100f, 25f, 10f, categories);
+
+            Assert.That(ship.Slots.Count, Is.EqualTo(2));
+            Assert.That(ship.Slots[0].Category, Is.EqualTo(ShipModuleCategory.Weapon));
+            Assert.That(ship.Slots[1].Category, Is.EqualTo(ShipModuleCategory.Armor));
+            Assert.That(ship.Slots[0].IsEmpty, Is.True);
+        }
+
+        [Test]
+        public void InstallModule_AddsBonusToMaxHullAndCurrentHull()
+        {
+            var categories = new[] { ShipModuleCategory.Armor };
+            var ship = ShipEntity.CreateWithSlots("Destroyer", 100f, 25f, 10f, categories);
+            var module = ShipModuleEntity.Create("Plating", ShipModuleCategory.Armor, 20f, 0f, 0f);
+
+            var updated = ship.InstallModule(0, module);
+
+            Assert.That(updated.MaxHull, Is.EqualTo(120f));
+            Assert.That(updated.Hull, Is.EqualTo(120f));
+            Assert.That(updated.Slots[0].IsEmpty, Is.False);
+        }
+
+        [Test]
+        public void InstallModule_OnDamagedShip_PreservesExistingDamage()
+        {
+            var categories = new[] { ShipModuleCategory.Armor };
+            var ship = ShipEntity.CreateWithSlots("Destroyer", 100f, 25f, 10f, categories).TakeDamage(40f);
+            var module = ShipModuleEntity.Create("Plating", ShipModuleCategory.Armor, 20f, 0f, 0f);
+
+            var updated = ship.InstallModule(0, module);
+
+            // 100 - 40 damage = 60 hull, +20 bonus = 80, not a free heal to 120
+            Assert.That(updated.Hull, Is.EqualTo(80f));
+            Assert.That(updated.MaxHull, Is.EqualTo(120f));
+        }
+
+        [Test]
+        public void InstallModule_WrongCategory_ThrowsInvalidOperationException()
+        {
+            var categories = new[] { ShipModuleCategory.Weapon };
+            var ship = ShipEntity.CreateWithSlots("Destroyer", 100f, 25f, 10f, categories);
+            var module = ShipModuleEntity.Create("Plating", ShipModuleCategory.Armor, 20f, 0f, 0f);
+
+            Assert.Throws<InvalidOperationException>(() => ship.InstallModule(0, module));
+        }
+
+        [Test]
+        public void RemoveModule_SubtractsBonusAndClampsCurrentHull()
+        {
+            var categories = new[] { ShipModuleCategory.Armor };
+            var ship = ShipEntity.CreateWithSlots("Destroyer", 100f, 25f, 10f, categories);
+            var module = ShipModuleEntity.Create("Plating", ShipModuleCategory.Armor, 20f, 0f, 0f);
+            var withModule = ship.InstallModule(0, module);
+
+            var removed = withModule.RemoveModule(0);
+
+            Assert.That(removed.MaxHull, Is.EqualTo(100f));
+            Assert.That(removed.Hull, Is.EqualTo(100f));
+            Assert.That(removed.Slots[0].IsEmpty, Is.True);
+        }
+
+        [Test]
+        public void InstallModule_InvalidSlotIndex_ThrowsArgumentOutOfRangeException()
+        {
+            var ship = ShipEntity.Create("Destroyer", 100f, 25f, 10f); // no slots
+            var module = ShipModuleEntity.Create("Plating", ShipModuleCategory.Armor, 20f, 0f, 0f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => ship.InstallModule(0, module));
+        }
     }
 }

@@ -15,6 +15,12 @@ namespace GalacticEmpire.Feature.Galaxy.Application
         private readonly GalaxyGeneratorService  _generator;
         private readonly GameConfigSO  _config;
 
+        // Stage 1d (Claiming) - optional, wired by GameEntryPoint via
+        // SetSectorClearCheck. Null until wired (e.g. in a unit test that
+        // constructs GalaxyService directly) means ClaimSector only
+        // enforces SectorEntity.Claim's own IsDiscovered precondition.
+        private Func<Guid, bool> _isSectorClear;
+
         public GalaxyService(
             IGalaxyRepository galaxyRepository,
             GalaxyGeneratorService generator,
@@ -56,11 +62,21 @@ namespace GalacticEmpire.Feature.Galaxy.Application
             return updated;
         }
 
-        /// <summary>Player conquered a sector.</summary>
+        /// <summary>
+        /// Player conquered a sector. Throws if a garrison check is wired
+        /// (Stage 1d, see SetSectorClearCheck) and reports the sector still
+        /// has a live garrison - enforced here, not just in the UI, so this
+        /// can't be bypassed by any caller.
+        /// </summary>
         public SectorEntity ClaimSector(Guid sectorId)
         {
             var galaxy  = GetGalaxyOrThrow();
             var sector  = GetSectorOrThrow(galaxy, sectorId);
+
+            if (_isSectorClear != null && !_isSectorClear(sectorId))
+                throw new InvalidOperationException(
+                    $"Cannot claim {sector.Name} - a hostile garrison is still present.");
+
             var updated = sector.Claim();
 
             _galaxyRepository.Save(galaxy.UpdateSector(updated));
@@ -93,6 +109,12 @@ namespace GalacticEmpire.Feature.Galaxy.Application
         public void ClearGalaxy()
         {
             _galaxyRepository.Clear();
+        }
+
+        /// <summary>Stage 1d - wires the "is this sector's garrison cleared" check from GameEntryPoint.</summary>
+        public void SetSectorClearCheck(Func<Guid, bool> isSectorClear)
+        {
+            _isSectorClear = isSectorClear;
         }
 
         private GalaxyMapEntity GetGalaxyOrThrow()

@@ -1,18 +1,26 @@
 // Commands and service contract for fleet operations.
 // Keeping commands here avoids cross-namespace visibility issues.
+//
+// 2026-10-21 (Stage 1c): CreateFleetCommand/BuildShipCommand no longer carry
+// ShipBlueprintSO - Application must never reference Infrastructure (same
+// rule Station's PlaceModuleCommand follows, taking a StationModuleEntity
+// instead of a StationModuleSO). The Presentation caller (FleetManagement-
+// Screen) now calls blueprint.CreateEntity() and reads blueprint.MetalCost/
+// EnergyCost itself, passing the built ShipEntity + its cost in instead.
 
 using System;
 using System.Collections.Generic;
-using GalacticEmpire.Core;
 using GalacticEmpire.Feature.Fleet.Domain;
 
 namespace GalacticEmpire.Feature.Fleet.Application
 {
     // Commands - immutable data carriers, no logic inside
-    public sealed record CreateFleetCommand(string Name, ShipBlueprintSO Blueprint, int ShipCount);
+    public sealed record CreateFleetCommand(string Name, IReadOnlyList<ShipEntity> Ships, float TotalMetalCost, float TotalEnergyCost);
     public sealed record DispatchFleetCommand(Guid FleetId, Guid TargetSectorId);
     public sealed record RecallFleetCommand(Guid FleetId);
-    public sealed record BuildShipCommand(ShipBlueprintSO Blueprint, Guid TargetFleetId);
+    public sealed record BuildShipCommand(ShipEntity Ship, Guid TargetFleetId, float MetalCost, float EnergyCost);
+    public sealed record InstallModuleCommand(Guid ShipId, int SlotIndex, ShipModuleEntity Module, float MetalCost, float EnergyCost);
+    public sealed record RemoveModuleCommand(Guid ShipId, int SlotIndex);
 
     /// <summary>All fleet use cases go through here.</summary>
     public interface IFleetService
@@ -45,6 +53,21 @@ namespace GalacticEmpire.Feature.Fleet.Application
 
         // Queues a ship for construction
         void BuildShip(BuildShipCommand cmd);
+
+        // Finds the ship with the given id across every tracked fleet, or
+        // null if none has it (Stage 1c - ship builder needs this to locate
+        // a ship by id regardless of which fleet it's currently in).
+        ShipEntity FindShip(Guid shipId);
+
+        // Installs a module into one of a ship's slots (Stage 1c) - checks
+        // resource affordability first, same pattern as CreateFleet/BuildShip.
+        // Only valid for a ship in an Idle fleet (see FleetService for why).
+        ShipEntity InstallModule(InstallModuleCommand cmd);
+
+        // Removes a module from one of a ship's slots (Stage 1c) - no
+        // resource refund, same "modules are a sunk cost once fitted"
+        // stance VISION.md takes on ship construction cost in general.
+        ShipEntity RemoveModule(RemoveModuleCommand cmd);
 
         // Replaces the tracked fleet with its post-battle state (surviving ships,
         // Status back to Idle) - BattlePresenter calls this after a real-time

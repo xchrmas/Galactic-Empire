@@ -1,9 +1,21 @@
 // ScriptableObject implementation of IFleetRepository.
+//
+// 2026-10-21: using GalacticEmpire.Core -> using GalacticEmpire.Feature.
+// Fleet.Domain, since ShipEntity migrated there (Stage 1c). No other
+// behavior change. NOTE: Unity serializes the ShipEntity type by full name
+// in the FleetRepository.asset YAML - after this namespace change, any
+// existing FleetRepository.asset's serialized _ships list will fail to
+// deserialize the type and silently reset to empty on next load. This
+// matches what happened implicitly during Station's Phase 7 Etap 3
+// migration (ScriptableObject data resets, not preserved across a
+// namespace move) - not a regression specific to this change, just the
+// same known cost. Clear/recreate the FleetRepository asset's data (or
+// just let GameEntryPoint's startup Clear() handle it) after applying.
 
 
 using System;
 using System.Collections.Generic;
-using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Fleet.Domain;
 using GalacticEmpire.Feature.Fleet.Application;
 using UnityEngine;
 

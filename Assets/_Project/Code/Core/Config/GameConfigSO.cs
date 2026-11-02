@@ -98,6 +98,26 @@ namespace GalacticEmpire.Core
             "garrison across ThreatLevel 0.5-1.0).")]
         public float EnemyThreatDamageScale = -0.6f;
 
+        [Header("Enemy Ship Roles (BACKLOG-27)")]
+        [Tooltip("Hull multiplier for a Heavy-role NPC ship, applied on top of the " +
+            "Base/ThreatScale formula above - NOT a new absolute stat. Paired with " +
+            "EnemyHeavyDamageMultiplier so a Heavy ship's hull*damage (its CombatPower " +
+            "contribution) stays close to a plain Raider's, keeping garrison total power " +
+            "roughly unchanged from before role variety existed - only its distribution " +
+            "across ships changes. A garrison with any ships above ThreatLevel 0.5 no " +
+            "longer being all-identical Raiders.")]
+        public float EnemyHeavyHullMultiplier = 1.5f;
+
+        [Tooltip("Damage multiplier for a Heavy-role NPC ship - see EnemyHeavyHullMultiplier.")]
+        public float EnemyHeavyDamageMultiplier = 0.67f;
+
+        [Tooltip("Hull multiplier for a Striker-role NPC ship - the inverse trade-off from " +
+            "Heavy (less hull, more damage per shot). See EnemyHeavyHullMultiplier.")]
+        public float EnemyStrikerHullMultiplier = 0.67f;
+
+        [Tooltip("Damage multiplier for a Striker-role NPC ship - see EnemyStrikerHullMultiplier.")]
+        public float EnemyStrikerDamageMultiplier = 1.5f;
+
         [Header("Debug")]
         [Tooltip("Enable verbose logging in development builds.")]
         public bool VerboseLogging = true;

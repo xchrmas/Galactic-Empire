@@ -39,9 +39,13 @@ namespace GalacticEmpire.Feature.Exploration.Application
         void Tick();
 
         // Called once a fleet's encounter at its target sector is resolved
-        // (win or loss/draw) - starts the return trip on a win, leaves the
-        // mission at Arrived otherwise (fleet stays at the sector; repair/
-        // recall is Stage 1b, out of scope here).
+        // (win or loss/draw) - starts the return trip on a win. On a loss/draw
+        // the mission is removed outright (not left dangling at Arrived) -
+        // a loss/draw always means the fleet was fully destroyed
+        // (BattleEntity.DetermineStatus only ends a battle once one or both
+        // sides hit zero ships), so there is nothing left to send home.
+        // Fixed 2026-10-15 after this comment was found to describe stale
+        // behavior - see features/exploration.md.
         void NotifyEncounterResolved(Guid fleetId, bool playerWon);
 
         // Lets the composition root (GameEntryPoint) supply a check for

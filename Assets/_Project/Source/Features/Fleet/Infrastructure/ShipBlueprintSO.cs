@@ -1,13 +1,31 @@
 // ScriptableObject configuration for the ship type.
-// For designers and customizers, all ship characteristics
+// For designers and customizers, all ship characteristics.
+//
+// Moved from Source/Features/Fleet/Domain/ to Infrastructure/ (2026-10-21,
+// alongside Stage 1c) - SO/content-config classes belong in Infrastructure
+// per the Station pattern (StationModuleSO), Domain stays pure data+logic
+// with no UnityEngine/Odin dependency. Moving this required removing
+// ShipBlueprintSO from IFleetService's CreateFleetCommand/BuildShipCommand
+// (Application must never reference Infrastructure - same rule Station's
+// PlaceModuleCommand follows) - see IFleetService.cs and
+// FleetManagementScreen.cs for the caller-side change: the Presentation
+// caller now calls CreateEntity()/reads costs itself and passes a built
+// ShipEntity + its cost into the command, instead of passing the SO through.
+//
+// Stage 1c: added _slotCategories, so a blueprint now defines how many
+// module slots of which ShipModuleCategory the ship has, instead of (only)
+// fixed combat stats. CreateEntity() builds the ship with those slots via
+// ShipEntity.CreateWithSlots - MaxHull/Damage/Speed below are the ship's
+// BASE stats before any module is installed, same meaning they always had.
 
-using GalacticEmpire.Core;
+using System.Collections.Generic;
+using GalacticEmpire.Feature.Fleet.Domain;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GalacticEmpire.Feature.Fleet.Domain
+namespace GalacticEmpire.Feature.Fleet.Infrastructure
 {
-    /// <summary>Defines stats, cost and visual data for a ship class.</summary>
+    /// <summary>Defines stats, cost, slots and visual data for a ship class.</summary>
     [CreateAssetMenu(fileName = "New Ship", menuName = "GalacticEmpire/Fleet/Ship Blueprint")]
     public sealed class ShipBlueprintSO : SerializedScriptableObject
     {
@@ -39,6 +57,11 @@ namespace GalacticEmpire.Feature.Fleet.Domain
         [LabelText("Speed"), SuffixLabel("units/sec"), MinValue(0f)]
         [SerializeField] private float _speed = 10f;
 
+        [TitleGroup("Module Slots")]
+        [LabelText("Slot Categories"), ListDrawerSettings(ShowFoldout = true)]
+        [InfoBox("One entry per slot, in order. e.g. [Weapon, Weapon, Armor, Engine] gives the ship 4 slots.")]
+        [SerializeField] private List<ShipModuleCategory> _slotCategories = new();
+
         [TitleGroup("Build Cost")]
         [LabelText("Metal"), SuffixLabel("units"), MinValue(0f)]
         [SerializeField] private float _metalCost = 100f;
@@ -65,6 +88,7 @@ namespace GalacticEmpire.Feature.Fleet.Domain
         public float Damage  => _damage;
         public float Speed   => _speed;
 
+        public IReadOnlyList<ShipModuleCategory> SlotCategories => _slotCategories;
 
         public float MetalCost  => _metalCost;
         public float EnergyCost => _energyCost;
@@ -72,10 +96,10 @@ namespace GalacticEmpire.Feature.Fleet.Domain
         public int RequiredShipyardLevel  => _requiredShipyardLevel;
 
 
-        // Spawns a ShipEntity from this blueprint
+        /// <summary>Spawns a ShipEntity from this blueprint, with empty module slots if any are defined.</summary>
         public ShipEntity CreateEntity()
         {
-            return ShipEntity.Create(_shipName, _maxHull, _damage, _speed);
+            return ShipEntity.CreateWithSlots(_shipName, _maxHull, _damage, _speed, _slotCategories);
         }
 
         [TitleGroup("Preview")]
@@ -83,7 +107,7 @@ namespace GalacticEmpire.Feature.Fleet.Domain
         private void PreviewStats()
         {
             Debug.Log($"[ShipBlueprintSO] {_shipName} ({_shipType})\n" +
-                      $"Hull: {_maxHull} | Damage: {_damage} | Speed: {_speed}\n" +
+                      $"Hull: {_maxHull} | Damage: {_damage} | Speed: {_speed} | Slots: {_slotCategories.Count}\n" +
                       $"Cost: {_metalCost} Metal + {_energyCost} Energy | Build: {_buildTime}s\n" +
                       $"Requires Shipyard Lv.{_requiredShipyardLevel}");
         }

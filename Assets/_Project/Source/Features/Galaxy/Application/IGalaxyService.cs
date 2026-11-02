@@ -19,7 +19,9 @@ namespace GalacticEmpire.Feature.Galaxy.Application
         // Fleet entered a sector - reveals it on the map
         SectorEntity DiscoverSector(Guid sectorId);
 
-        // Player conquered a sector
+        // Player conquered a sector. Throws if the sector isn't discovered
+        // yet, or (Stage 1d) if SetSectorClearCheck was wired and reports a
+        // live garrison still present in the sector.
         SectorEntity ClaimSector(Guid sectorId);
 
         // Player lost a sector to enemies
@@ -30,5 +32,17 @@ namespace GalacticEmpire.Feature.Galaxy.Application
 
         // Removes the saved galaxy - used to reset state at game start
         void ClearGalaxy();
+
+        // Stage 1d (Claiming) - lets GameEntryPoint plug in a "does this
+        // sector still have a live garrison" check without Galaxy.Application
+        // referencing Battle.Application directly (same constraint and same
+        // callback shape as IExplorationService.SetEncounterCheck - Battle
+        // already depends on Galaxy via IGalaxyService, so a reference back
+        // from here would be circular). ClaimSector enforces this check at
+        // the Application layer - not just as a UI-only guard in
+        // GalaxyMapScreen - so no caller can bypass it, scripted or not.
+        // Optional: if never wired, ClaimSector only enforces the
+        // IsDiscovered precondition SectorEntity.Claim already had.
+        void SetSectorClearCheck(Func<Guid, bool> isSectorClear);
     }
 }

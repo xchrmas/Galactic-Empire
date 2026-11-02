@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8173b797385df948956103c592430bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 60143488ace1ac647820b85a2f68502e, type: 3}
   m_Name: Blueprint_Battleship
   m_EditorClassIdentifier: GalacticEmpire.Feature.Fleet.Infrastructure::GalacticEmpire.Feature.Fleet.Infrastructure.ShipBlueprintSO
   serializationData:
@@ -21,13 +21,14 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  _shipName: 1
-  _shipType: 0
+  _shipName: Battleship
+  _shipType: 3
   _icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   _description: 
   _maxHull: 100
   _damage: 25
   _speed: 10
+  _slotCategories: 0000000000000000010000000100000003000000
   _metalCost: 100
   _energyCost: 50
   _buildTime: 30

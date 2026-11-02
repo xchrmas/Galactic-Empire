@@ -2,6 +2,13 @@
 // player recall a moving/idle fleet and build a new fleet from a blueprint.
 // Dispatch stays on GalaxyMapScreen - that's where the target sector is
 // actually chosen, no point duplicating sector selection here.
+//
+// 2026-10-21 (Stage 1c): HandleCreateFleetPressed now calls
+// blueprint.CreateEntity() and reads blueprint.MetalCost/EnergyCost itself
+// before building CreateFleetCommand - ShipBlueprintSO moved to
+// Infrastructure and IFleetService's commands no longer carry it directly
+// (Application must not reference Infrastructure). Same pattern
+// StationBuilderPresenter already uses for StationModuleSO.CreateEntity().
 
 using System;
 using System.Linq;
@@ -9,6 +16,7 @@ using GalacticEmpire.Feature.Exploration.Application;
 using GalacticEmpire.Feature.Exploration.Domain;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Fleet.Domain;
+using GalacticEmpire.Feature.Fleet.Infrastructure;
 using GalacticEmpire.Feature.UI.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -154,6 +162,24 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             row.Add(recallButton);
 
+            // Open Ship Builder for this fleet's ships - only while Idle
+            // (Stage 1c: FleetEntity.ReplaceShip enforces this too, this
+            // just disables the button rather than letting the player hit
+            // the error). Opens for the fleet's first ship; a multi-ship
+            // fleet's other ships are reachable from inside ShipBuilderScreen
+            // itself via its own ship picker.
+            if (fleet.Status == FleetStatus.Idle && fleet.ShipCount > 0)
+            {
+                var configureButton = new Button(() => HandleConfigurePressed(fleet)) { text = "CONFIGURE" };
+                configureButton.style.height = 26;
+                configureButton.style.fontSize = 11;
+                configureButton.style.marginTop = 4;
+                configureButton.style.backgroundColor = new Color(30f / 255f, 80f / 255f, 60f / 255f, 0.8f);
+                configureButton.style.color = new Color(180f / 255f, 255f / 255f, 210f / 255f);
+
+                row.Add(configureButton);
+            }
+
             // A destroyed fleet can't be recalled (nothing left to recall) -
             // give the player a way to dismiss the dead entry instead of
             // leaving a permanently-grayed-out RECALL button with no
@@ -263,6 +289,26 @@ namespace GalacticEmpire.Feature.UI.Screens
             }
         }
 
+        /// <summary>
+        /// Opens ShipBuilderScreen for the fleet's first ship (Stage 1c).
+        /// ShipBuilderScreen itself lives alongside this screen (UI/Screens/)
+        /// and is shown as a further overlay, mirroring how GalaxyMapScreen
+        /// opens above HUD. GameEntryPoint wires the actual Show() call via
+        /// an event, same shape as other screen-to-screen navigation - see
+        /// GameEntryPoint.cs wiring notes.
+        /// </summary>
+        private void HandleConfigurePressed(FleetEntity fleet)
+        {
+            var firstShip = fleet.Ships.FirstOrDefault();
+            if (firstShip == null)
+                return;
+
+            OnConfigureShipRequested?.Invoke(firstShip.Id);
+        }
+
+        /// <summary>Raised when the player wants to open the ship builder for a given ship id.</summary>
+        public event Action<Guid> OnConfigureShipRequested;
+
         private void HandleCreateFleetPressed(ShipBlueprintSO blueprint)
         {
             string fleetName = _fleetNameField != null && !string.IsNullOrWhiteSpace(_fleetNameField.value)
@@ -275,7 +321,15 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             try
             {
-                var fleet = _fleetService.CreateFleet(new CreateFleetCommand(fleetName, blueprint, shipCount));
+                var ships = Enumerable.Range(0, shipCount)
+                    .Select(_ => blueprint.CreateEntity())
+                    .ToList()
+                    .AsReadOnly();
+
+                float totalMetal = blueprint.MetalCost * shipCount;
+                float totalEnergy = blueprint.EnergyCost * shipCount;
+
+                var fleet = _fleetService.CreateFleet(new CreateFleetCommand(fleetName, ships, totalMetal, totalEnergy));
                 _feedback.text = $"{fleet.Name} created with {fleet.ShipCount} ship(s).";
                 Refresh();
             }

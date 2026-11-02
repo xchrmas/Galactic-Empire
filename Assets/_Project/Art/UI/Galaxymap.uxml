@@ -32,6 +32,15 @@
                        background-color: rgba(20,60,120,0.8); color: rgba(180,220,255,1);
                        border-color: rgba(100,180,255,0.4); border-width: 1px; border-radius: 3px;"/>
 
+            <!-- Stage 1d (Claiming) - hidden by default, shown only for a
+                 discovered, unowned sector; GalaxyMapScreen.RefreshClaimButton
+                 toggles display and enabled state. -->
+            <ui:Button name="claim-button" text="CLAIM"
+                style="height: 36px; font-size: 12px; -unity-font-style: bold; margin-top: 6px;
+                       background-color: rgba(30,100,50,0.8); color: rgba(190,255,200,1);
+                       border-color: rgba(100,255,150,0.4); border-width: 1px; border-radius: 3px;
+                       display: none;"/>
+
             <ui:Label name="dispatch-feedback" text=""
                 style="font-size: 11px; color: rgba(255,180,100,1); margin-top: 8px; white-space: normal;"/>
 

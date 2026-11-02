@@ -19,5 +19,15 @@ namespace GalacticEmpire.Feature.Battle.Application
 
         // Marks the sector's garrison as cleared - call after the enemy is defeated.
         void ResolveEncounter(Guid sectorId);
+
+        // Read-only check (Stage 1d, Claiming) - true if the sector has no
+        // live, unbeaten garrison: either it never had one (safe sector, or
+        // simply never checked yet - see EncounterService for why that's
+        // still safe to treat as clear) or it did and was already cleared.
+        // Unlike CheckForEncounter, this NEVER generates a garrison as a
+        // side effect - a Claim button polling this on every sector click
+        // must not accidentally spawn enemies into sectors the player
+        // hasn't engaged yet.
+        bool IsSectorClear(Guid sectorId);
     }
 }

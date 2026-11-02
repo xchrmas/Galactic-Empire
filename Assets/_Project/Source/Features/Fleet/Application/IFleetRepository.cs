@@ -1,8 +1,11 @@
 //  Contract for fleet data access.
+//
+// 2026-10-21: using GalacticEmpire.Core -> using GalacticEmpire.Feature.
+// Fleet.Domain, since ShipEntity migrated there (Stage 1c). No other change.
 
 using System;
 using System.Collections.Generic;
-using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Fleet.Domain;
 
 namespace GalacticEmpire.Feature.Fleet.Application
 {

@@ -9,11 +9,18 @@
 // Instead this raises OnFleetDispatchedToSector, and GameEntryPoint (which
 // already references every layer) wires the encounter check from there.
 // See features/battle.md for the full encounter flow.
+//
+// 2026-10-21 (Stage 1d, Claiming, Variant C): added a CLAIM button next to
+// Dispatch. Same circular-dependency constraint applies to the "is this
+// sector's garrison cleared" check as already applies to
+// _isBattleInProgress - GameEntryPoint wires SetSectorClearCheck the same
+// way it wires SetBattleInProgressCheck.
 
 using System;
 using System.Linq;
 using GalacticEmpire.Feature.Fleet.Application;
 using GalacticEmpire.Feature.Fleet.Domain;
+using GalacticEmpire.Feature.Galaxy.Application;
 using GalacticEmpire.Feature.Galaxy.Domain;
 using GalacticEmpire.Feature.UI.Core;
 using UnityEngine;
@@ -21,7 +28,7 @@ using UnityEngine.UIElements;
 
 namespace GalacticEmpire.Feature.UI.Screens
 {
-    /// <summary>Galaxy map overlay - sector info panel and fleet dispatch.</summary>
+    /// <summary>Galaxy map overlay - sector info panel, fleet dispatch, sector claiming.</summary>
     public sealed class GalaxyMapScreen : ScreenBase
     {
         [SerializeField] private UIDocument _document;
@@ -35,14 +42,21 @@ namespace GalacticEmpire.Feature.UI.Screens
         private DropdownField _fleetDropdown;
         private Button _dispatchButton;
         private Label _dispatchFeedback;
+        private Button _claimButton;
 
         private IFleetService _fleetService;
+        private IGalaxyService _galaxyService;
         private bool _uiInitialized;
 
         // Set by GameEntryPoint via SetBattleInProgressCheck - lets this screen
         // block Dispatch while a battle is running without referencing
         // BattlePresenter directly (see the circular-dependency note above).
         private Func<bool> _isBattleInProgress;
+
+        // Set by GameEntryPoint via SetSectorClearCheck (Stage 1d) - lets this
+        // screen know whether a sector's garrison is cleared, without
+        // referencing IEncounterService directly (same constraint as above).
+        private Func<Guid, bool> _isSectorClear;
 
         private SectorEntity _selectedSector;
         private FleetEntity[] _idleFleets = Array.Empty<FleetEntity>();
@@ -57,9 +71,10 @@ namespace GalacticEmpire.Feature.UI.Screens
         // keeping this screen free of any Battle-layer reference.
         public event Action<FleetEntity, Guid> OnFleetDispatchedToSector;
 
-        public void Initialize(IFleetService fleetService)
+        public void Initialize(IFleetService fleetService, IGalaxyService galaxyService)
         {
             _fleetService = fleetService;
+            _galaxyService = galaxyService;
         }
 
         /// <summary>
@@ -69,6 +84,16 @@ namespace GalacticEmpire.Feature.UI.Screens
         public void SetBattleInProgressCheck(Func<bool> isBattleInProgress)
         {
             _isBattleInProgress = isBattleInProgress;
+        }
+
+        /// <summary>
+        /// Lets GameEntryPoint plug in a "is this sector's garrison cleared"
+        /// check (Stage 1d) without this screen needing to reference
+        /// IEncounterService directly.
+        /// </summary>
+        public void SetSectorClearCheck(Func<Guid, bool> isSectorClear)
+        {
+            _isSectorClear = isSectorClear;
         }
 
         protected override void OnShow()
@@ -110,9 +135,13 @@ namespace GalacticEmpire.Feature.UI.Screens
             _fleetDropdown = root.Q<DropdownField>("fleet-dropdown");
             _dispatchButton = root.Q<Button>("dispatch-button");
             _dispatchFeedback = root.Q<Label>("dispatch-feedback");
+            _claimButton = root.Q<Button>("claim-button");
 
             if (_dispatchButton != null)
                 _dispatchButton.clicked += HandleDispatchPressed;
+
+            if (_claimButton != null)
+                _claimButton.clicked += HandleClaimPressed;
 
             _uiInitialized = true;
         }
@@ -152,6 +181,7 @@ namespace GalacticEmpire.Feature.UI.Screens
             _dispatchFeedback.text = "";
 
             RefreshFleetDropdown();
+            RefreshClaimButton();
         }
 
         private void RefreshFleetDropdown()
@@ -171,6 +201,29 @@ namespace GalacticEmpire.Feature.UI.Screens
 
             if (_dispatchButton != null)
                 _dispatchButton.SetEnabled(names.Count > 0);
+        }
+
+        /// <summary>
+        /// Stage 1d - the CLAIM button is visible only for a discovered,
+        /// unowned sector, and enabled only once its garrison (if any) is
+        /// cleared. A sector that was never dangerous (safe/low-threat) is
+        /// claimable immediately on discovery - see IEncounterService.
+        /// IsSectorClear for why that's correct, not a loophole.
+        /// </summary>
+        private void RefreshClaimButton()
+        {
+            if (_claimButton == null || _selectedSector == null)
+                return;
+
+            bool canShow = _selectedSector.IsDiscovered && !_selectedSector.IsOwned;
+            _claimButton.style.display = canShow ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (!canShow)
+                return;
+
+            bool isClear = _isSectorClear == null || _isSectorClear(_selectedSector.Id);
+            _claimButton.SetEnabled(isClear);
+            _claimButton.text = isClear ? "CLAIM" : "CLAIM (garrison present)";
         }
 
         private void HandleDispatchPressed()
@@ -206,12 +259,38 @@ namespace GalacticEmpire.Feature.UI.Screens
             }
         }
 
+        private void HandleClaimPressed()
+        {
+            if (_selectedSector == null || _galaxyService == null)
+                return;
+
+            if (_isSectorClear != null && !_isSectorClear(_selectedSector.Id))
+            {
+                _dispatchFeedback.text = "Clear the sector's garrison before claiming it.";
+                return;
+            }
+
+            try
+            {
+                var claimed = _galaxyService.ClaimSector(_selectedSector.Id);
+                _dispatchFeedback.text = $"{claimed.Name} claimed!";
+                ShowSectorInfo(claimed);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _dispatchFeedback.text = ex.Message;
+            }
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
             if (_dispatchButton != null)
                 _dispatchButton.clicked -= HandleDispatchPressed;
+
+            if (_claimButton != null)
+                _claimButton.clicked -= HandleClaimPressed;
         }
     }
 }

@@ -35,6 +35,7 @@ namespace GalacticEmpire.Presentation
         private readonly GalaxyMapScreen _galaxyMapScreen;
         private readonly StationBuilderScreen _stationBuilderScreen;
         private readonly FleetManagementScreen _fleetManagementScreen;
+        private readonly ShipBuilderScreen _shipBuilderScreen;
         private readonly BattleHUDScreen _battleHUDScreen;
         private readonly IResourceRepository _resourceRepository;
         private readonly GameConfigSO _config;
@@ -56,6 +57,7 @@ namespace GalacticEmpire.Presentation
             GalaxyMapScreen galaxyMapScreen,
             StationBuilderScreen stationBuilderScreen,
             FleetManagementScreen fleetManagementScreen,
+            ShipBuilderScreen shipBuilderScreen,
             BattleHUDScreen battleHUDScreen,
             IResourceRepository resourceRepository,
             GameConfigSO config)
@@ -73,6 +75,7 @@ namespace GalacticEmpire.Presentation
             _galaxyMapScreen = galaxyMapScreen;
             _stationBuilderScreen = stationBuilderScreen;
             _fleetManagementScreen = fleetManagementScreen;
+            _shipBuilderScreen = shipBuilderScreen;
             _battleHUDScreen = battleHUDScreen;
             _resourceRepository = resourceRepository;
             _config = config;
@@ -206,12 +209,14 @@ namespace GalacticEmpire.Presentation
             _uiManager.Register(_galaxyMapScreen);
             _uiManager.Register(_stationBuilderScreen);
             _uiManager.Register(_fleetManagementScreen);
+            _uiManager.Register(_shipBuilderScreen);
             _uiManager.Register(_battleHUDScreen);
 
             // Initialize HUD with resource repository
             _hudScreen.Initialize(_resourceRepository);
-            _galaxyMapScreen.Initialize(_fleetService);
+            _galaxyMapScreen.Initialize(_fleetService, _galaxyService);
             _fleetManagementScreen.Initialize(_fleetService, _explorationService);
+            _shipBuilderScreen.Initialize(_fleetService);
 
             // Show Main Menu first
             await _uiManager.ShowAsync<MainMenuScreen>();
@@ -225,6 +230,10 @@ namespace GalacticEmpire.Presentation
             _hudScreen.OnStationPressed += HandleStationPressed;
             _hudScreen.OnFleetPressed += HandleFleetPressed;
 
+            // ShipBuilderScreen has no HUD button of its own - opened from
+            // FleetManagementScreen's CONFIGURE button instead (Stage 1c).
+            _fleetManagementScreen.OnConfigureShipRequested += HandleConfigureShipRequested;
+
             // BattleHUDScreen has no HUD button and no toggle handler - BattlePresenter
             // shows/hides it directly when a real-time encounter starts/ends (see
             // features/battle.md). Registering it here only makes it known to
@@ -236,6 +245,14 @@ namespace GalacticEmpire.Presentation
             // (see the note in Galaxymapscreen.cs). GameEntryPoint sits above both
             // assemblies, so the wiring happens here instead.
             _galaxyMapScreen.SetBattleInProgressCheck(() => _battlePresenter.IsBattleInProgress);
+
+            // Stage 1d (Claiming, Variant C) - same circular-dependency
+            // constraint as SetBattleInProgressCheck above: GalaxyMapScreen
+            // can't reference IEncounterService directly, so the check is
+            // wired in here instead.
+            _galaxyMapScreen.SetSectorClearCheck(sectorId => _encounterService.IsSectorClear(sectorId));
+            _galaxyService.SetSectorClearCheck(sectorId => _encounterService.IsSectorClear(sectorId));
+
             _galaxyMapScreen.OnFleetDispatchedToSector += HandleFleetDispatchedToSector;
 
             // Auto-return (VISION.md decision 2) needs to know the encounter's
@@ -286,6 +303,12 @@ namespace GalacticEmpire.Presentation
         private void HandleFleetPressed()
         {
             _uiManager.ToggleAsync<FleetManagementScreen>().Forget();
+        }
+
+        private void HandleConfigureShipRequested(Guid shipId)
+        {
+            _shipBuilderScreen.SetShip(shipId);
+            _uiManager.ShowAsync<ShipBuilderScreen>().Forget();
         }
     }
 }

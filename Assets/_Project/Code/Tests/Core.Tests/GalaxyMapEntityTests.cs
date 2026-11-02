@@ -140,6 +140,90 @@ namespace GalacticEmpire.Core.Tests
             Assert.That(sector.IsOwned, Is.True);
         }
 
+        // IsReachable
+
+        [Test]
+        public void IsReachable_SameSector_ReturnsTrue()
+        {
+            var sector = CreateSector("Alpha");
+            var galaxy = GalaxyMapEntity.CreateFromSectors(new List<SectorEntity> { sector });
+
+            Assert.That(galaxy.IsReachable(sector.Id, sector.Id), Is.True);
+        }
+
+        [Test]
+        public void IsReachable_DirectNeighbour_ReturnsTrue()
+        {
+            var a = CreateSector("Alpha");
+            var b = CreateSector("Beta");
+            a = a.WithNeighbours(new List<Guid> { b.Id });
+            b = b.WithNeighbours(new List<Guid> { a.Id });
+            var galaxy = GalaxyMapEntity.CreateFromSectors(new List<SectorEntity> { a, b });
+
+            Assert.That(galaxy.IsReachable(a.Id, b.Id), Is.True);
+        }
+
+        [Test]
+        public void IsReachable_MultiHopChain_ReturnsTrue()
+        {
+            // A - B - C - D, no direct A-D edge - must traverse through B and C
+            var chain = CreateLinearChain(4);
+            var galaxy = GalaxyMapEntity.CreateFromSectors(chain);
+
+            Assert.That(galaxy.IsReachable(chain[0].Id, chain[3].Id), Is.True);
+        }
+
+        [Test]
+        public void IsReachable_DisconnectedSector_ReturnsFalse()
+        {
+            var a = CreateSector("Alpha");
+            var b = CreateSector("Beta"); // no neighbours at all - isolated
+            var galaxy = GalaxyMapEntity.CreateFromSectors(new List<SectorEntity> { a, b });
+
+            Assert.That(galaxy.IsReachable(a.Id, b.Id), Is.False);
+        }
+
+        [Test]
+        public void IsReachable_IgnoresDiscoveryState()
+        {
+            // Reachability must not depend on IsDiscovered - fog of war is a
+            // separate concern (see features/galaxy.md "GalaxyMapEntity.IsReachable").
+            var a = CreateSector("Alpha");
+            var b = CreateSector("Beta");
+            a = a.WithNeighbours(new List<Guid> { b.Id });
+            b = b.WithNeighbours(new List<Guid> { a.Id });
+            var galaxy = GalaxyMapEntity.CreateFromSectors(new List<SectorEntity> { a, b });
+
+            Assert.That(b.IsDiscovered, Is.False);
+            Assert.That(galaxy.IsReachable(a.Id, b.Id), Is.True);
+        }
+
+        [Test]
+        public void IsReachable_NonexistentFromSector_ReturnsFalse()
+        {
+            var a = CreateSector("Alpha");
+            var galaxy = GalaxyMapEntity.CreateFromSectors(new List<SectorEntity> { a });
+
+            Assert.That(galaxy.IsReachable(Guid.NewGuid(), a.Id), Is.False);
+        }
+
+        private static IReadOnlyList<SectorEntity> CreateLinearChain(int count)
+        {
+            var sectors = new List<SectorEntity>();
+            for (int i = 0; i < count; i++)
+                sectors.Add(SectorEntity.Create($"Sector_{i}", SectorType.Safe, new Vector2(i, 0)));
+
+            for (int i = 0; i < count; i++)
+            {
+                var neighbourIds = new List<Guid>();
+                if (i > 0) neighbourIds.Add(sectors[i - 1].Id);
+                if (i < count - 1) neighbourIds.Add(sectors[i + 1].Id);
+                sectors[i] = sectors[i].WithNeighbours(neighbourIds);
+            }
+
+            return sectors.AsReadOnly();
+        }
+
         private static SectorEntity CreateSector(string name)
         {
             return SectorEntity.Create(name, SectorType.Safe, Vector2.zero);

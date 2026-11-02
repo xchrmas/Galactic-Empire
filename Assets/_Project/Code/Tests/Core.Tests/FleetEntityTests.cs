@@ -394,5 +394,86 @@ namespace GalacticEmpire.Core.Tests
 
             Assert.That(noShips.IsDestroyed, Is.True);
         }
+
+        // Repair
+
+        [Test]
+        public void Repair_RestoresDamagedShipToFullHull()
+        {
+            var ship = CreateTestShip("Destroyer", maxHull: 100f);
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships);
+            var damaged = fleet.ApplyBattleDamage(ship.Id, 60f);
+
+            var repaired = damaged.Repair();
+
+            Assert.That(repaired.Ships[0].Hull, Is.EqualTo(100f));
+        }
+
+        [Test]
+        public void Repair_WithMultipleDamagedShips_RestoresAllToFullHull()
+        {
+            var ship1 = CreateTestShip("Destroyer", maxHull: 100f);
+            var ship2 = CreateTestShip("Cruiser", maxHull: 150f);
+            var ships = new List<ShipEntity> { ship1, ship2 }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships);
+            var damaged = fleet
+                .ApplyBattleDamage(ship1.Id, 40f)
+                .ApplyBattleDamage(ship2.Id, 90f);
+
+            var repaired = damaged.Repair();
+
+            Assert.That(repaired.Ships[0].Hull, Is.EqualTo(100f));
+            Assert.That(repaired.Ships[1].Hull, Is.EqualTo(150f));
+        }
+
+        [Test]
+        public void Repair_DoesNotChangeStatus()
+        {
+            var ship = CreateTestShip("Destroyer", maxHull: 100f);
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships).Dispatch(Guid.NewGuid()).EnterBattle();
+            var damaged = fleet.ApplyBattleDamage(ship.Id, 40f);
+
+            var repaired = damaged.Repair();
+
+            Assert.That(repaired.Status, Is.EqualTo(FleetStatus.InBattle));
+        }
+
+        [Test]
+        public void Repair_DoesNotModifyOriginalFleet()
+        {
+            var ship = CreateTestShip("Destroyer", maxHull: 100f);
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships);
+            var damaged = fleet.ApplyBattleDamage(ship.Id, 60f);
+
+            damaged.Repair();
+
+            Assert.That(damaged.Ships[0].Hull, Is.EqualTo(40f));
+        }
+
+        [Test]
+        public void Repair_WhenFleetIsDestroyed_ThrowsInvalidOperationException()
+        {
+            var ship = CreateTestShip();
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships);
+            var destroyed = fleet with { Status = FleetStatus.Destroyed };
+
+            Assert.Throws<InvalidOperationException>(() => destroyed.Repair());
+        }
+
+        [Test]
+        public void Repair_OnUndamagedFleet_IsANoOp()
+        {
+            var ship = CreateTestShip("Destroyer", maxHull: 100f);
+            var ships = new List<ShipEntity> { ship }.AsReadOnly();
+            var fleet = FleetEntity.Create("Alpha Fleet", ships);
+
+            var repaired = fleet.Repair();
+
+            Assert.That(repaired.Ships[0].Hull, Is.EqualTo(100f));
+        }
     }
 }

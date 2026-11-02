@@ -1,7 +1,14 @@
 // Tests Performance Measures performance of Core fleet operations.
-
+//
+// 2026-10-21: added explicit usings for ShipEntity's new namespace
+// (GalacticEmpire.Feature.Fleet.Domain, migrated from GalacticEmpire.Core
+// as part of Stage 1c) and for ResourceWallet/ResourceType, which this file
+// was also using unqualified. Same situation as ShipEntityTests.cs - see
+// that file's header comment.
 
 using System.Collections.Generic;
+using GalacticEmpire.Core;
+using GalacticEmpire.Feature.Fleet.Domain;
 using NUnit.Framework;
 using Unity.PerformanceTesting;
 

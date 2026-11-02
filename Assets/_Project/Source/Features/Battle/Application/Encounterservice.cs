@@ -1,4 +1,4 @@
-﻿// Lazily generates and remembers NPC garrisons per sector.
+// Lazily generates and remembers NPC garrisons per sector.
 // First visit to a sector above the threat threshold rolls a garrison via
 // EnemyFleetGeneratorService and remembers it in ISectorGarrisonRepository.
 // Every later visit returns the same remembered result - a cleared sector
@@ -64,6 +64,29 @@ namespace GalacticEmpire.Feature.Battle.Application
         {
             _garrisonRepository.Clear(sectorId);
             GELogger.Info(LogCategory.Battle, $"Sector {sectorId} garrison cleared.");
+        }
+
+        /// <summary>
+        /// Read-only - true if the sector has no live, unbeaten garrison
+        /// (Stage 1d, Claiming). Deliberately does NOT call CheckForEncounter
+        /// or touch EnemyFleetGeneratorService - that method generates a
+        /// garrison as a side effect on first visit, which a Claim-button
+        /// availability check must never trigger. A sector that has never
+        /// been visited (HasBeenGenerated false) is treated as clear: by the
+        /// time a sector is IsDiscovered (Claim's own precondition in
+        /// SectorEntity.Claim), ExplorationService.ResolveArrival has
+        /// already called the encounter check once for it via
+        /// GameEntryPoint's wiring, so HasBeenGenerated is normally already
+        /// true for any discovered sector that could ever have had a
+        /// garrison. The false branch mainly covers a safe/low-threat
+        /// sector, which legitimately never gets a garrison at all.
+        /// </summary>
+        public bool IsSectorClear(Guid sectorId)
+        {
+            if (!_garrisonRepository.HasBeenGenerated(sectorId))
+                return true;
+
+            return _garrisonRepository.Get(sectorId) == null;
         }
     }
 }

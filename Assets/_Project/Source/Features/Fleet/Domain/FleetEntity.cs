@@ -121,6 +121,35 @@ namespace GalacticEmpire.Feature.Fleet.Domain
             return this with { Ships = updatedShips, Status = newStatus };
         }
 
+        /// <summary>
+        /// Returns a new fleet with one ship replaced by its updated version -
+        /// used after ShipEntity.InstallModule/RemoveModule (Stage 1c). Unlike
+        /// ApplyBattleDamage, this never removes the ship (a module change
+        /// can't kill a ship) and is only valid while the fleet is Idle -
+        /// module slots are a station-side fit-out action, not something that
+        /// happens mid-mission or mid-battle (see ShipEntity's header comment
+        /// on why MaxHull is a one-time recompute, not a live value).
+        /// </summary>
+        public FleetEntity ReplaceShip(ShipEntity updatedShip)
+        {
+            if (updatedShip == null)
+                throw new ArgumentNullException(nameof(updatedShip));
+
+            if (Status != FleetStatus.Idle)
+                throw new InvalidOperationException(
+                    $"Fleet {Name} must be Idle to reconfigure a ship's modules (currently {Status}).");
+
+            if (Ships.All(s => s.Id != updatedShip.Id))
+                throw new InvalidOperationException($"Ship {updatedShip.Id} is not part of fleet {Name}.");
+
+            var updatedShips = Ships
+                .Select(s => s.Id == updatedShip.Id ? updatedShip : s)
+                .ToList()
+                .AsReadOnly();
+
+            return this with { Ships = updatedShips };
+        }
+
         /// <summary>Merge another fleet into this one.</summary>
         public FleetEntity MergeWith(FleetEntity other)
         {

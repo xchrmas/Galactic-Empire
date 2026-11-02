@@ -41,6 +41,7 @@ namespace GalacticEmpire.Presentation
         [SerializeField] private GalaxyMapScreen _galaxyMapScreen;
         [SerializeField] private StationBuilderScreen _stationBuilderScreen;
         [SerializeField] private FleetManagementScreen _fleetManagementScreen;
+        [SerializeField] private ShipBuilderScreen _shipBuilderScreen;
         [SerializeField] private BattleHUDScreen _battleHUDScreen;
         [SerializeField] private GameConfigSO _config;
 
@@ -89,6 +90,7 @@ namespace GalacticEmpire.Presentation
             builder.RegisterComponent(_stationBuilderScreen);
             builder.RegisterComponent(_stationBuilderPresenter);
             builder.RegisterComponent(_fleetManagementScreen);
+            builder.RegisterComponent(_shipBuilderScreen);
             builder.RegisterComponent(_battleHUDScreen);
             builder.RegisterComponent(_battlePresenter);
 
